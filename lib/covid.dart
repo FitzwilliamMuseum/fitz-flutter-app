@@ -3,23 +3,21 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
-import 'all.dart';
 import 'about.dart';
 import 'home.dart';
-import 'story.dart';
 
-class NewsPage extends ConsumerStatefulWidget {
-  const NewsPage({Key? key}) : super(key: key);
+class CovidPage extends ConsumerStatefulWidget {
+  const CovidPage({Key? key}) : super(key: key);
 
   @override
-  NewsPageState createState() => NewsPageState();
+  CovidPageState createState() => CovidPageState();
 }
 
-class NewsPageState extends ConsumerState<NewsPage> {
+class CovidPageState extends ConsumerState<CovidPage> {
   @override
   void initState() {
     super.initState();
@@ -29,7 +27,18 @@ class NewsPageState extends ConsumerState<NewsPage> {
     ref.read(searchResultsProvider);
   }
 
+  String removeAllHtmlTags(String htmlText) {
+    RegExp exp = RegExp(
+        r"<[^>]*>",
+        multiLine: true,
+        caseSensitive: true
+    );
+
+    return htmlText.replaceAll(exp, '');
+  }
+
   newsItems() {
+
     final searchResultsData = ref.watch(searchResultsProvider);
     return searchResultsData.when(
       data: (results) => ListView.builder(
@@ -40,18 +49,25 @@ class NewsPageState extends ConsumerState<NewsPage> {
         itemBuilder: (context, index) {
           final result = results[index];
           return Card(
-              child: ListTile(
-                  leading: Image.network(result.image),
-                  title: Text(result.title),
-                subtitle: Text(result.date),
-            trailing: const Icon(Icons.more_vert),
-            onTap: ()  {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) =>  StoryPage(id: result.id.toString())),
-              );
-            },
-          ));
+              shape:  OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: Colors.white, width: 0)
+              ),
+              child:  Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: MarkdownBody(
+                      data: removeAllHtmlTags(result.text),
+                    styleSheet: MarkdownStyleSheet(
+                      p: const TextStyle(color: Colors.black, fontSize: 16),
+                    ),
+                  )
+              ),
+            elevation: 10,
+            shadowColor: Colors.black,
+            margin: const EdgeInsets.all(0),
+
+          );
+
         },
       ),
       error: (e, st) =>
@@ -71,7 +87,7 @@ class NewsPageState extends ConsumerState<NewsPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AllPage()),
+            MaterialPageRoute(builder: (context) => HomePage()),
           );
         },
       ),
@@ -105,7 +121,8 @@ class NewsPageState extends ConsumerState<NewsPage> {
                           );
                         },
                       ),
-                    )),
+                    )
+                ),
                 Padding(
                     padding: const EdgeInsets.fromLTRB(0, 50, 40, 20),
                     child: Align(
@@ -129,17 +146,21 @@ class NewsPageState extends ConsumerState<NewsPage> {
                       alignment: Alignment.bottomCenter, child: fitzlogo()),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 230, 0, 0),
+                  padding: const EdgeInsets.fromLTRB(0, 240, 0, 0),
                   child: Align(
-                      alignment: Alignment.bottomCenter, child: rosette()),
+                      alignment: Alignment.bottomCenter,
+                      child: rosette()),
                 ),
               ]),
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                padding: const EdgeInsets.all(5.0),
                 child: newsHeadlineText(),
               ),
-
-              newsItems(),
+              pineapple(),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                child:newsItems(),
+              ),
               explore(),
             ],
           ),
@@ -152,29 +173,16 @@ class NewsPageState extends ConsumerState<NewsPage> {
 class SearchResult {
   SearchResult({
     required this.title,
-      required this.date,
-      required this.url,
-      required this.excerpt,
-      required this.image,
-      required this.id
-
+    required this.text
   });
 
   final String title;
-  final String date;
-  final String url;
-  final String excerpt;
-  final String image;
-  final String id;
+  final String text;
 
   factory SearchResult.fromJson(Map<String, dynamic> data) {
     return SearchResult(
-        title: data['article_title'],
-        date: data['publication_date'],
-        url: 'https://fitz.ms',
-        image: data['field_image']['data']['thumbnails'][2]['url'],
-        excerpt: data["article_excerpt"],
-        id: data['id'].toString()
+        title: data['title'],
+        text: data['text']
     );
   }
 }
@@ -196,7 +204,7 @@ class SearchResultsParser {
 class APIClient {
   Future<List<SearchResult>> downloadAndParseJson() async {
     final response = await http.get(Uri.parse(
-        'https://content.fitz.ms/fitz-website/items/news_articles?fields=article_title,id,publication_date,*.*&sort=-id&limit=6'));
+        'https://content.fitz.ms/fitz-website/items/visit_us_components?fields=*.*.*.*&sort=-id&limit=1&filter[id][eq]=2'));
     if (response.statusCode == 200) {
       final parser = SearchResultsParser();
       return parser.parseInBackground(response.body);
@@ -236,16 +244,15 @@ explore() {
 
 newsHeadlineText() {
   return Padding(
-    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+    padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: const [
         Flexible(
-            child: Text("Latest News",
+            child: Text("Covid 19 latest measures",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 30.0, color: Colors.black)
-            )
+                style: TextStyle(fontSize: 30.0, color: Colors.black))
         )
       ],
     ),

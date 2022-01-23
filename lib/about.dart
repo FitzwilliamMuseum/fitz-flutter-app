@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'favorites.dart';
 import 'all.dart';
 import 'home.dart';
+import 'utilities/icons.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({Key? key}) : super(key: key);
@@ -14,29 +15,7 @@ class AboutPage extends StatefulWidget {
 
 class _AboutPageState extends State<AboutPage> {
 
-  rosette() {
-    return Image.asset('assets/rosette.png', height: 100, width: 100);
-  }
 
-  pineapple() {
-    return Image.asset('assets/pineapple.jpg', height: 50, width: 50);
-  }
-
-  fitzlogo() {
-    return Image.asset('assets/Fitz_logo_white.png', height: 150, width: 150);
-  }
-  pineapples() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        pineapple(),
-        pineapple(),
-        pineapple(),
-        pineapple()
-      ],
-    );
-  }
 
   aboutText() {
     return Row(
@@ -46,7 +25,7 @@ class _AboutPageState extends State<AboutPage> {
         RichText(
           text: const TextSpan(
               text: 'About this app',
-              style: TextStyle( color: Colors.black, fontSize: 18),
+              style: TextStyle( color: Colors.black, fontSize: 24),
 
           ),
         ),
@@ -60,8 +39,8 @@ class _AboutPageState extends State<AboutPage> {
       children:  const [
         Flexible(
             child: Text(
-                "This is an experimental app to showcase the Fitzwilliam Museum's collection of objects. "
-                    "\n\nIt was built by Daniel Pett, using Flutter.\n\nCurrently version 1.0",
+                "This is an experimental app to showcase the Fitzwilliam Museum's collection of objects and rich media. "
+                    "\n\nIt was built by Daniel Pett, using Flutter.\n\nVersion 1.0",
               textAlign: TextAlign.center,)
         )
       ],

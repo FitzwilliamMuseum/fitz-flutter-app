@@ -32,7 +32,9 @@ dependencies:
   http: ^0.13.3
   shared_preferences: ^2.0.5
   url_launcher: ^6.0.4
-  connectivity_plus: ^1.0.1
+  auto_size_text: ^3.0.0
+
+  connectivity_plus: ^2.1.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -40,6 +42,16 @@ dependencies:
   google_fonts: ^2.2.0
   carousel_slider: ^4.0.0
   flutter_riverpod: ^1.0.3
+  flutter_html: ^3.0.0-alpha.2
+  flutter_markdown: ^0.6.9
+  font_awesome_flutter: ^9.2.0
+  just_audio: ^0.9.18
+  mp3_info: ^0.2.0
+  audio_session: ^0.1.6+1
+  card_swiper: ^2.0.1
+  intl: ^0.17.0
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -97,3 +109,4 @@ flutter:
     - assets/Portico.jpg
     - assets/pineapple.jpg
     - assets/rosette.png
+    - assets/hockney.jpg

@@ -3,23 +3,20 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'all.dart';
 import 'about.dart';
 import 'home.dart';
-import 'story.dart';
+import 'podcast_episode.dart';
 
-class NewsPage extends ConsumerStatefulWidget {
-  const NewsPage({Key? key}) : super(key: key);
+class PodcastsPage extends ConsumerStatefulWidget {
+  const PodcastsPage({Key? key}) : super(key: key);
 
   @override
-  NewsPageState createState() => NewsPageState();
+  PodcastsPageState createState() => PodcastsPageState();
 }
 
-class NewsPageState extends ConsumerState<NewsPage> {
+class PodcastsPageState extends ConsumerState<PodcastsPage> {
   @override
   void initState() {
     super.initState();
@@ -41,17 +38,16 @@ class NewsPageState extends ConsumerState<NewsPage> {
           final result = results[index];
           return Card(
               child: ListTile(
-                  leading: Image.network(result.image),
-                  title: Text(result.title),
-                subtitle: Text(result.date),
-            trailing: const Icon(Icons.more_vert),
-            onTap: ()  {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) =>  StoryPage(id: result.id.toString())),
-              );
-            },
-          ));
+                leading: Image.network(result.image),
+                title: Text(result.title),
+                trailing: const Icon(Icons.more_vert),
+                onTap: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>  EpisodePage(id: result.id.toString())),
+                  );
+                },
+              ));
         },
       ),
       error: (e, st) =>
@@ -71,7 +67,7 @@ class NewsPageState extends ConsumerState<NewsPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AllPage()),
+            MaterialPageRoute(builder: (context) =>  HomePage()),
           );
         },
       ),
@@ -151,30 +147,27 @@ class NewsPageState extends ConsumerState<NewsPage> {
 
 class SearchResult {
   SearchResult({
+    required this.id,
     required this.title,
-      required this.date,
-      required this.url,
-      required this.excerpt,
-      required this.image,
-      required this.id
-
+    required this.url,
+    required this.image,
+    required this.description
   });
 
-  final String title;
-  final String date;
-  final String url;
-  final String excerpt;
-  final String image;
   final String id;
+  final String title;
+  final String url;
+  final String image;
+  final String description;
+
 
   factory SearchResult.fromJson(Map<String, dynamic> data) {
     return SearchResult(
-        title: data['article_title'],
-        date: data['publication_date'],
-        url: 'https://fitz.ms',
-        image: data['field_image']['data']['thumbnails'][2]['url'],
-        excerpt: data["article_excerpt"],
-        id: data['id'].toString()
+        id: data['id'].toString(),
+        title: data['title'],
+        url: data['slug'],
+        image: data['hero_image']['data']['thumbnails'][2]['url'],
+        description: data["description"]
     );
   }
 }
@@ -196,10 +189,11 @@ class SearchResultsParser {
 class APIClient {
   Future<List<SearchResult>> downloadAndParseJson() async {
     final response = await http.get(Uri.parse(
-        'https://content.fitz.ms/fitz-website/items/news_articles?fields=article_title,id,publication_date,*.*&sort=-id&limit=6'));
+        'https://content.fitz.ms/fitz-website/items/podcast_archive?fields=title,id,slug,description,hero_image.*,podcast_series.*&sort=-id&limit=10&filter[mp3_id][neq]=""'));
+
     if (response.statusCode == 200) {
       final parser = SearchResultsParser();
-      return parser.parseInBackground(response.body);
+      return parser.parseInBackground(utf8.decode(response.bodyBytes));
     } else {
       throw Exception('Failed to load json');
     }
@@ -242,7 +236,7 @@ newsHeadlineText() {
       mainAxisSize: MainAxisSize.min,
       children: const [
         Flexible(
-            child: Text("Latest News",
+            child: Text("Discover audio wonders",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 30.0, color: Colors.black)
             )
