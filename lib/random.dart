@@ -41,12 +41,13 @@ class RandomPageState extends ConsumerState<RandomPage> {
           const contentUrl = 'https://data.fitzmuseum.cam.ac.uk/imagestore/';
           final Image leading;
           leading = Image.network(
-              contentUrl + result.image,
+            contentUrl + result.image,
           );
           final title = result.fullTitle;
           final maker = result.maker;
           final description = result.description;
           final department = result.department;
+          final accession = result.accession;
           _launchURL() async {
             if (await canLaunch(result.url)) {
               await launch(result.url);
@@ -54,6 +55,7 @@ class RandomPageState extends ConsumerState<RandomPage> {
               throw 'Could not launch $result.url';
             }
           }
+
           return Column(
             children: <Widget>[
               ImageFullScreenWrapperWidget(
@@ -65,12 +67,10 @@ class RandomPageState extends ConsumerState<RandomPage> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(
-                          title!,
+                      child: Text(title!,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 30.0, color: Colors.black)
-                      ),
-
+                          style: const TextStyle(
+                              fontSize: 30.0, color: Colors.black)),
                     )
                   ],
                 ),
@@ -80,12 +80,10 @@ class RandomPageState extends ConsumerState<RandomPage> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(
-                          'Made by: ' + maker!,
+                      child: Text(accession,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 20.0, color: Colors.purple)
-                      ),
-
+                          style: const TextStyle(
+                              fontSize: 30.0, color: Colors.black)),
                     )
                   ],
                 ),
@@ -95,12 +93,10 @@ class RandomPageState extends ConsumerState<RandomPage> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(
-                          description!,
+                      child: Text('Made by: ' + maker!,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 16.0, color: Colors.black)
-                      ),
-
+                          style: const TextStyle(
+                              fontSize: 20.0, color: Colors.purple)),
                     )
                   ],
                 ),
@@ -110,12 +106,23 @@ class RandomPageState extends ConsumerState<RandomPage> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(
-                          'In the collection of ' + department!,
+                      child: Text(description!,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 16.0, color: Colors.black)
-                      ),
-
+                          style: const TextStyle(
+                              fontSize: 16.0, color: Colors.black)),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 6, 0, 0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text('In the collection of ' + department!,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              fontSize: 16.0, color: Colors.black)),
                     )
                   ],
                 ),
@@ -128,43 +135,31 @@ class RandomPageState extends ConsumerState<RandomPage> {
                     ElevatedButton(
                       onPressed: _launchURL,
                       child: const Text('View online'),
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.redAccent,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                            padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-                            textStyle:
-                            const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
-                      ),
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.redAccent,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50)),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 50, vertical: 10),
+                          textStyle: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
                     ),
-
                   ],
                 ),
               ),
-
             ],
           );
-          return Card(
-              child: ListTile(
-                leading: Image.network(contentUrl + result.image),
-                title: Text(result.title),
-                trailing: const Icon(Icons.more_vert),
-                onTap: () async {
-                  if (!await launch(result.url)) {
-                    throw 'Could not launch ${result.url}';
-                  }
-                },
-              ));
         },
       ),
       error: (e, st) =>
           Text(e.toString(), style: Theme.of(context).textTheme.headline5),
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
+      loading: () => SizedBox(
+        height: 400,
+        width: 400,
+        child: Image.asset('assets/rosetteRotate.gif', height: 150, width: 150),
       ),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +170,7 @@ class RandomPageState extends ConsumerState<RandomPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  HomePage()),
+            MaterialPageRoute(builder: (context) => HomePage()),
           );
         },
       ),
@@ -202,7 +197,22 @@ class RandomPageState extends ConsumerState<RandomPage> {
                           );
                         },
                       ),
-                    )),
+                    )
+                ),
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 50, 80, 0),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        iconSize: 30,
+                        color: Colors.white,
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    )
+                ),
                 Padding(
                     padding: const EdgeInsets.fromLTRB(0, 50, 40, 20),
                     child: Align(
@@ -221,8 +231,8 @@ class RandomPageState extends ConsumerState<RandomPage> {
                       ),
                     )),
               ]),
-
-              explore(),pineapple()
+              explore(),
+              pineapple()
             ],
           ),
         ),
@@ -232,34 +242,45 @@ class RandomPageState extends ConsumerState<RandomPage> {
 }
 
 class SearchResult {
-  SearchResult({
-    required this.title,
-    required this.url,
-    required this.image,
-    this.fullTitle,
-    this.maker,
-    this.description,
-    this.department
-  });
+  SearchResult(
+      {required this.title,
+      required this.url,
+      required this.image,
+      required this.accession,
+      this.fullTitle,
+      this.maker,
+      this.description,
+      this.department});
 
   final String title;
   final String url;
   final String image;
+  final String accession;
   final String? fullTitle;
   final String? maker;
   final String? description;
   final String? department;
 
   factory SearchResult.fromJson(Map<String, dynamic> data) {
+    final identifier = data["identifier"][0];
+    print(identifier);
     return SearchResult(
         title: data['summary_title'],
         url: data['admin']['uri'],
         image: data['multimedia'][0]['processed']['large']['location'],
-        fullTitle: data.containsKey("title") ? data['title'][0]['value'] : 'No full title',
-        maker: data['lifecycle']['creation'][0].containsKey("maker") ? data['lifecycle']['creation'][0]['maker'][0]['summary_title'] : 'No maker recorded',
-        description: data.containsKey("description") ? data['description'][0]['value'] : 'No description at the moment',
-        department: data['department']['value']
-    );
+        fullTitle: data.containsKey("title")
+            ? data['title'][0]['value']
+            : 'No full title',
+        maker: data['lifecycle']['creation'][0].containsKey("maker")
+            ? data['lifecycle']['creation'][0]['maker'][0]['summary_title']
+            : 'No maker recorded',
+        description: data.containsKey("description")
+            ? data['description'][0]['value']
+            : 'No description at the moment',
+        department: data['department']['value'],
+        accession: identifier.containsKey("accession_number")
+            ? identifier['accession_number']
+            : 'No accession number');
   }
 }
 
@@ -279,8 +300,8 @@ class SearchResultsParser {
 
 class APIClient {
   Future<List<SearchResult>> downloadAndParseJson() async {
-    final response = await http.get(Uri.parse(
-        'https://data.fitzmuseum.cam.ac.uk/random/app'));
+    final response = await http
+        .get(Uri.parse('https://data.fitzmuseum.cam.ac.uk/random/app'));
     if (response.statusCode == 200) {
       final parser = SearchResultsParser();
       return parser.parseInBackground(response.body);
@@ -339,6 +360,11 @@ pineapple() {
 }
 
 extension StringCasingExtension on String {
-  String toCapitalized() => length > 0 ?'${this[0].toUpperCase()}${substring(1).toLowerCase()}':'';
-  String toTitleCase() => replaceAll(RegExp(' +'), ' ').split(' ').map((str) => str.toCapitalized()).join(' ');
+  String toCapitalized() =>
+      length > 0 ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
+
+  String toTitleCase() => replaceAll(RegExp(' +'), ' ')
+      .split(' ')
+      .map((str) => str.toCapitalized())
+      .join(' ');
 }

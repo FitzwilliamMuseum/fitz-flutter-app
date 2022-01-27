@@ -10,7 +10,7 @@ import 'details_art.dart';
 
 
 class DepartmentsPage extends StatefulWidget {
-  DepartmentsPage({required this.id, required this.name});
+  const DepartmentsPage({required this.id, required this.name});
 
   final String id;
   final String name;
@@ -47,7 +47,7 @@ class _DepartmentsPageState extends State<DepartmentsPage> {
 
     if (list!.contains(id)) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text("This item is already in your favorites!"),
           )
       );
@@ -144,14 +144,14 @@ class _DepartmentsPageState extends State<DepartmentsPage> {
                 try {
                   try {
                     if (data["primaryImageSmall"] == "") {
-                      leading = Icon(Icons.dangerous, color: Colors.red);
+                      leading = const Icon(Icons.dangerous, color: Colors.red);
                     }
                     else {
                       leading = Image.network(data["primaryImageSmall"]);
                     }
                   }
                   on Exception {
-                    leading = Icon(Icons.dangerous, color: Colors.red);
+                    leading = const Icon(Icons.dangerous, color: Colors.red);
                   }
 
                   if (data["artistDisplayName"]== "") {
@@ -162,7 +162,7 @@ class _DepartmentsPageState extends State<DepartmentsPage> {
                   }
                 }
                 on TypeError {
-                  return SizedBox.shrink();
+                  return const SizedBox.shrink();
                 }
 
 

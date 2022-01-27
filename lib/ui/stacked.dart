@@ -22,20 +22,20 @@ class StyleCard extends StatelessWidget {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: <Widget>[
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width*0.7,
               height: MediaQuery.of(context).size.width*0.65,
               child: image,
             ),
-            SizedBox(height: 5,),
+            const SizedBox(height: 5,),
             Text(
               title,
-              style: TextStyle(color: Colors.pinkAccent,fontSize: 22,fontWeight: FontWeight.bold),
+              style: const TextStyle(color: Colors.pinkAccent,fontSize: 22,fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             Text(
               description,
-              style: TextStyle(color: Colors.black),textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.black),textAlign: TextAlign.center,
             ),
 
           ],

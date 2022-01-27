@@ -13,7 +13,6 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
@@ -24,7 +23,8 @@ class _SplashScreenState extends State<SplashScreen> {
     loadData();
   }
 
-  Future<Timer> loadData() async => Timer(const Duration(seconds: 3), onDoneLoading);
+  Future<Timer> loadData() async =>
+      Timer(const Duration(seconds: 3), onDoneLoading);
 
   onDoneLoading() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -38,19 +38,16 @@ class _SplashScreenState extends State<SplashScreen> {
     // ignore: missing_enum_constant_in_switch
     switch (result) {
       case ConnectivityResult.wifi:
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) => HomePage())
-        );
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => HomePage()));
         break;
       case ConnectivityResult.mobile:
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) => HomePage())
-        );
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => HomePage()));
         break;
       case ConnectivityResult.none:
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) => const ErrorPage())
-        );
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const ErrorPage()));
         break;
     }
   }
@@ -63,20 +60,19 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:  Container(
+      body: Container(
         constraints: const BoxConstraints.expand(),
-        decoration:  BoxDecoration(
+        decoration: BoxDecoration(
             color: Colors.black,
             image: DecorationImage(
                 image: const AssetImage('assets/Portico.jpg'),
                 fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(Colors.white.withOpacity(0.6), BlendMode.dstATop)
-            )
-        ),
+                colorFilter: ColorFilter.mode(
+                    Colors.white.withOpacity(0.6), BlendMode.dstATop))),
         child: Image.asset(
           'assets/Fitz_logo_white.png',
           height: 200,
-          width:  200,
+          width: 200,
         ),
         alignment: Alignment.center,
       ),

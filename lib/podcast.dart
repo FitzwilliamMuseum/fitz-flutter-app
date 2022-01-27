@@ -1,15 +1,10 @@
-// This is a minimal example demonstrating a play/pause button and a seek bar.
-// More advanced examples demonstrating other features can be found in the same
-// directory as this example in the GitHub repository.
-
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'utilities/common.dart';
 import 'package:rxdart/rxdart.dart';
-
-import 'all.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'home.dart';
 import 'favorites.dart';
 import 'utilities/icons.dart';
@@ -24,13 +19,11 @@ class PodcastPage extends StatefulWidget {
 class _PodcastPageState extends State<PodcastPage> with WidgetsBindingObserver {
   final _player = AudioPlayer();
 
-
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addObserver(this);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.black,
     ));
     _init();
@@ -40,7 +33,7 @@ class _PodcastPageState extends State<PodcastPage> with WidgetsBindingObserver {
     // Inform the operating system of our app's audio attributes etc.
     // We pick a reasonable default for an app that plays speech.
     final session = await AudioSession.instance;
-    await session.configure(AudioSessionConfiguration.speech());
+    await session.configure(const AudioSessionConfiguration.speech());
     // Listen to errors during playback.
     _player.playbackEventStream.listen((event) {},
         onError: (Object e, StackTrace stackTrace) {
@@ -89,11 +82,11 @@ class _PodcastPageState extends State<PodcastPage> with WidgetsBindingObserver {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.museum_outlined),
-        tooltip: "View all our highlights",
+        tooltip: "Go home",
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AllPage()),
+            MaterialPageRoute(builder: (context) =>  HomePage()),
           );
         },
       ),
@@ -177,37 +170,6 @@ class _PodcastPageState extends State<PodcastPage> with WidgetsBindingObserver {
         ),
       ),
     );
-
-    MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Display play/pause button and volume/speed sliders.
-              ControlButtons(_player),
-              // Display seek bar. Using StreamBuilder, this widget rebuilds
-              // each time the position, buffered position or duration changes.
-              StreamBuilder<PositionData>(
-                stream: _positionDataStream,
-                builder: (context, snapshot) {
-                  final positionData = snapshot.data;
-                  return SeekBar(
-                    duration: positionData?.duration ?? Duration.zero,
-                    position: positionData?.position ?? Duration.zero,
-                    bufferedPosition:
-                        positionData?.bufferedPosition ?? Duration.zero,
-                    onChangeEnd: _player.seek,
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
 
@@ -215,7 +177,7 @@ class _PodcastPageState extends State<PodcastPage> with WidgetsBindingObserver {
 class ControlButtons extends StatelessWidget {
   final AudioPlayer player;
 
-  ControlButtons(this.player, {Key? key}) : super(key: key);
+  const ControlButtons(this.player, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +188,7 @@ class ControlButtons extends StatelessWidget {
           children: [
             // Opens volume slider dialog
             IconButton(
-              icon: Icon(Icons.volume_up),
+              icon: const Icon(Icons.volume_up),
               onPressed: () {
                 showSliderDialog(
                   context: context,
@@ -254,15 +216,15 @@ class ControlButtons extends StatelessWidget {
                 if (processingState == ProcessingState.loading ||
                     processingState == ProcessingState.buffering) {
                   return Container(
-                    margin: EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
                     width: 64.0,
                     height: 64.0,
-                    child: CircularProgressIndicator(),
+                    child: const CircularProgressIndicator(),
                   );
                 } else if (playing != true) {
                   return CircleAvatar(
                     radius: 64.0,
-                    backgroundColor: Color(0xff94c29a),
+                    backgroundColor: const Color(0xff94c29a),
                     child: IconButton(
                       icon: const Icon(
                         Icons.play_arrow,
@@ -275,7 +237,7 @@ class ControlButtons extends StatelessWidget {
                 } else if (processingState != ProcessingState.completed) {
                   return CircleAvatar(
                     radius: 64.0,
-                    backgroundColor: Color(0xff94c29a),
+                    backgroundColor: const Color(0xff94c29a),
                     child: IconButton(
                       icon: const Icon(
                         Icons.pause,
@@ -287,7 +249,7 @@ class ControlButtons extends StatelessWidget {
                   );
                 } else {
                   return IconButton(
-                    icon: Icon(Icons.replay),
+                    icon: const Icon(Icons.replay),
                     iconSize: 64.0,
                     onPressed: () => player.seek(Duration.zero),
                   );
@@ -299,7 +261,7 @@ class ControlButtons extends StatelessWidget {
               stream: player.speedStream,
               builder: (context, snapshot) => IconButton(
                 icon: Text("${snapshot.data?.toStringAsFixed(1)}x",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
                 onPressed: () {
                   showSliderDialog(
                     context: context,
@@ -315,8 +277,6 @@ class ControlButtons extends StatelessWidget {
               ),
             ),
           ],
-        )
-    );
+        ));
   }
-
 }

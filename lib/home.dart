@@ -1,27 +1,16 @@
-import 'package:fitz_museum_app/highlights.dart';
-import 'package:fitz_museum_app/random.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:fitz_museum_app/search.dart';
+import 'package:fitz_museum_app/search_results.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'package:card_swiper/card_swiper.dart';
-
+// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'about.dart';
-
-// import 'carousel.dart';
 import 'favorites.dart';
-import 'news.dart';
 import 'api/exhibitions.dart';
-
-// import 'departments.dart';
-import 'random.dart';
-import 'covid.dart';
-import 'highlights.dart';
-import 'podcasts.dart';
+import 'api/explore_fitz_cards.dart';
 
 // ignore: use_key_in_widget_constructors
 class HomePage extends StatefulWidget {
@@ -105,7 +94,7 @@ class _HomePageState extends State<HomePage> {
 
   youtubeText() {
     return Padding(
-      padding: const EdgeInsets.all(30.0),
+      padding: const EdgeInsets.fromLTRB(20, 1, 20, 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -159,155 +148,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  news() {
-    return IconButton(
-      iconSize: 48,
-      color: Colors.black,
-      icon: const Icon(Icons.article_outlined),
-      tooltip: "Latest news",
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const NewsPage()),
-        );
-      },
-    );
-  }
 
-  random() {
-    return IconButton(
-      iconSize: 48,
-      color: Colors.black,
-      icon: const FaIcon(FontAwesomeIcons.random),
-      tooltip: "Random object finder",
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const RandomPage()),
-        );
-      },
-    );
-  }
-
-  podcastShow() {
-    return IconButton(
-      iconSize: 48,
-      color: Colors.black,
-      icon: const FaIcon(FontAwesomeIcons.headphones),
-      tooltip: "Recent podcasts",
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const PodcastsPage()),
-        );
-      },
-    );
-  }
-
-  swiper() {
-    return Swiper(
-      itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const PodcastsPage()),
-            );
-          }, // Image tapped
-          child: Image.asset(
-            'assets/hockney.jpg',
-            fit: BoxFit.fill, // Fixes border issues
-          ),
-        );
-      },
-      itemCount: 10,
-      viewportFraction: 0.8,
-      scale: 0.9,
-      layout: SwiperLayout.TINDER,
-      itemWidth: 300.0,
-      itemHeight: 400.0,
-      pagination: const SwiperPagination(
-        margin: EdgeInsets.all(45.0),
-        builder: DotSwiperPaginationBuilder(
-            color: Colors.black, activeColor: Colors.red),
-      ),
-      control: const SwiperControl(),
-    );
-  }
-
-  highlights() {
-    return IconButton(
-      iconSize: 48,
-      color: Colors.black,
-      icon: const Icon(Icons.image_search_outlined),
-      tooltip: "Find our highlights",
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const HighlightsPage()),
-        );
-      },
-    );
-  }
-
-  masks() {
-    return SizedBox(
-      width: 60,
-      child: IconButton(
-        iconSize: 40,
-        color: Colors.black,
-        icon: const Icon(Icons.masks),
-        tooltip: "View latest corona virus info",
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CovidPage()),
-          );
-        },
-      ),
-    );
-  }
-
-  actionExplorer() {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        mainAxisSize: MainAxisSize.min,
-        children: [news(), masks(), highlights(), random(), podcastShow()],
-      ),
-    );
-  }
-
-  aboutTextBody() {
-    return Padding(
-      padding: const EdgeInsets.all(30.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: const [
-          Flexible(
-              child: Text("Explore the Fitz",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 30.0, color: Colors.black)))
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   child: const Icon(Icons.museum_outlined),
-      //   tooltip: "View all our highlights",
-      //   onPressed: () {
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(builder: (context) => const HighlightsPage()),
-      //     );
-      //   },
-      // ),
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Center(
@@ -378,7 +223,8 @@ class _HomePageState extends State<HomePage> {
                               context,
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      SearchPage(text: _controller.text)));
+                                      SearchResultsPage(
+                                          text: _controller.text)));
                         },
                         decoration: const InputDecoration(
                             prefixIcon: Icon(Icons.search),
@@ -388,34 +234,186 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             filled: true,
-                            hintText: "Search collection highlights",
+                            hintText: "Search our collection",
                             fillColor: Colors.white),
                       )),
                 ),
               ]),
-              // SizedBox(
-              //   width: MediaQuery.of(context).size.width,
-              //   // height: 400,
-              //   child: Image.asset(
-              //       "assets/hockney.jpg",
-              //       fit: BoxFit.fill,
-              //   ),
-              // ),
-
-              aboutTextBody(),
-              actionExplorer(),
-              youtubeText(),
-              youtube(),
-              // carousel(),
-              explore(),
-
-              Stack(children: <Widget>[
-                Container(height: 421, child: ExPage()),
+              Stack(children: const <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(0),
+                  child: SizedBox(
+                      height: 300, width: 400, child: ExploreActionsPage()),
+                ),
+              ]),
+              StaggeredGrid.count(
+                crossAxisCount: 4,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                children: [
+                  StaggeredGridTile.count(
+                    crossAxisCellCount: 2,
+                    mainAxisCellCount: 2,
+                    child: SizedBox(
+                      height: 300,
+                      child: Stack(children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, 'galleries');
+                          },
+                          child: Image.network(
+                            "https://fitz-cms-images.s3.eu-west-2.amazonaws.com/fitzwilliam-museum-main-entrance-2018_3-1.jpg",
+                            fit: BoxFit.cover,
+                            height: 300,
+                            colorBlendMode: BlendMode.modulate,
+                            color: const Color.fromRGBO(255, 255, 255, 0.9),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 140, 20, 20),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                top: BorderSide(
+                                    width: 4.0,
+                                    color: Colors.lightBlue.shade600),
+                              ),
+                            ),
+                            child: const Text('Our galleries',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontSize: 20.0, color: Colors.white)),
+                          ),
+                        )
+                      ]),
+                    ),
+                  ),
+                  StaggeredGridTile.count(
+                    crossAxisCellCount: 2,
+                    mainAxisCellCount: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(0),
+                      child: Stack(children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, 'research');
+                          },
+                          child: Image.network(
+                            'https://fitz-cms-images.s3.eu-west-2.amazonaws.com/fitzwilliam-museum-19th-century-photograph.jpg',
+                            fit: BoxFit.fill,
+                            height: 300,
+                            width: 300,
+                            colorBlendMode: BlendMode.modulate,
+                            color: const Color.fromRGBO(117, 117, 117, 0.9),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 60, 10, 10),
+                          child: Container(
+                            decoration:  BoxDecoration(
+                              border: Border(
+                                top:
+                                    BorderSide(
+                                        width: 2.0,
+                                        color: Colors.lightBlue.shade600
+                                    ),
+                              ),
+                            ),
+                            child: const Text('Our history',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.white,
+                                )),
+                          ),
+                        )
+                      ]),
+                    ),
+                  ),
+                  StaggeredGridTile.count(
+                    crossAxisCellCount: 2,
+                    mainAxisCellCount: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(0),
+                      child: Stack(children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, 'research');
+                          },
+                          child: Image.network(
+                            'https://fitz-cms-images.s3.eu-west-2.amazonaws.com/xrf-analysis-of-an-illuminated-mss-at-the-fitz-1.jpg',
+                            fit: BoxFit.fill,
+                            height: 300,
+                            width: 300,
+                            colorBlendMode: BlendMode.modulate,
+                            color: const Color.fromRGBO(117, 117, 117, 0.9),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 60, 10, 10),
+                          child: Container(
+                            decoration:  BoxDecoration(
+                              border: Border(
+                                top:
+                                    BorderSide(
+                                        width: 2.0,
+                                        color: Colors.lightBlue.shade600
+                                    ),
+                              ),
+                            ),
+                            child: const Text('Our research',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.white,
+                                )),
+                          ),
+                        )
+                      ]),
+                    ),
+                  ),
+                  StaggeredGridTile.count(
+                    crossAxisCellCount: 4,
+                    mainAxisCellCount: 2,
+                    child: youtube(),
+                  ),
+                ],
+              ),
+              Stack(children: const <Widget>[
+                SizedBox(height: 421, child: ExPage()),
               ]),
               pineapple(),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class Tile extends StatelessWidget {
+  const Tile({
+    Key? key,
+    required this.index,
+    this.height,
+    this.width,
+    this.onTap,
+  }) : super(key: key);
+
+  final double? height;
+  final double? width;
+  final int index;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        color: Colors.red,
+        height: height,
+        width: width,
+        child: Text('$index'),
       ),
     );
   }

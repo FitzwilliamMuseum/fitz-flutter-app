@@ -7,13 +7,13 @@ import 'package:audio_session/audio_session.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import 'home.dart';
 import 'favorites.dart';
 import 'highlights.dart';
 import 'about.dart';
 import 'utilities/common.dart';
-
-
 
 class EpisodePage extends StatefulWidget {
   const EpisodePage({Key? key, required this.id}) : super(key: key);
@@ -25,23 +25,23 @@ class EpisodePage extends StatefulWidget {
 }
 
 class _EpisodePageState extends State<EpisodePage> with WidgetsBindingObserver {
-
   final _player = AudioPlayer();
 
-  Future<void> _init( snapshot) async {
+  Future<void> _init(snapshot) async {
     final data = jsonDecode(snapshot.data.toString());
     // Inform the operating system of our app's audio attributes etc.
     // We pick a reasonable default for an app that plays speech.
     final session = await AudioSession.instance;
-    await session.configure(AudioSessionConfiguration.speech());
+    await session.configure(const AudioSessionConfiguration.speech());
     // Listen to errors during playback.
     _player.playbackEventStream.listen((event) {},
         onError: (Object e, StackTrace stackTrace) {
-          print('A stream error occurred: $e');
-        });
+      print('A stream error occurred: $e');
+    });
     // Try to load audio from a source and catch any errors.
     try {
-      await _player.setAudioSource(AudioSource.uri(Uri.parse(data['data'][0]['mp3_id'])));
+      await _player.setAudioSource(
+          AudioSource.uri(Uri.parse(data['data'][0]['mp3_id'])));
     } catch (e) {
       print("Error loading audio source: $e");
     }
@@ -73,7 +73,7 @@ class _EpisodePageState extends State<EpisodePage> with WidgetsBindingObserver {
           _player.positionStream,
           _player.bufferedPositionStream,
           _player.durationStream,
-              (position, bufferedPosition, duration) => PositionData(
+          (position, bufferedPosition, duration) => PositionData(
               position, bufferedPosition, duration ?? Duration.zero));
 
   @override
@@ -86,23 +86,18 @@ class _EpisodePageState extends State<EpisodePage> with WidgetsBindingObserver {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    // _init();
   }
 
-
   String removeAllHtmlTags(String htmlText) {
-    RegExp exp = RegExp(
-        r"<[^>]*>",
-        multiLine: true,
-        caseSensitive: true
-    );
+    RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
     return htmlText.replaceAll(exp, '');
   }
 
-  fetchData(http.Client client,String id) async {
-    final uri = "https://content.fitz.ms/fitz-website/items/podcast_archive?fields=*.*.*.*&limit=1&filter[id][eq]=" + id;
+  fetchData(http.Client client, String id) async {
+    final uri =
+        "https://content.fitz.ms/fitz-website/items/podcast_archive?fields=*.*.*.*&limit=1&filter[id][eq]=" +
+            id;
     final response = await client.get(Uri.parse(uri));
-    // headers: {"charset": "utf-8", "Accept-Charset": "utf-8"});
     if (response.statusCode == 200) {
       return (utf8.decode(response.bodyBytes));
     }
@@ -114,14 +109,15 @@ class _EpisodePageState extends State<EpisodePage> with WidgetsBindingObserver {
 
   builder(id) {
     return FutureBuilder(
-      future: fetchData(http.Client(),id),
+      future: fetchData(http.Client(), id),
       builder: (BuildContext context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Align(
             alignment: Alignment.center,
             child: Padding(
-              padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-              child: CircularProgressIndicator(),
+              padding: EdgeInsets.fromLTRB(0, 400, 0, 0),
+              child: SizedBox(
+                  height: 50, width: 50, child: CircularProgressIndicator()),
             ),
           );
         }
@@ -129,7 +125,8 @@ class _EpisodePageState extends State<EpisodePage> with WidgetsBindingObserver {
         final podcast = data['data'];
         final SizedBox leading;
         _init(snapshot);
-        final publicationDate = DateTime.tryParse(podcast[0]['publication_date']);
+        final publicationDate =
+            DateTime.tryParse(podcast[0]['publication_date']);
         try {
           if (podcast[0]["hero_image"] == "") {
             leading = SizedBox(
@@ -149,8 +146,7 @@ class _EpisodePageState extends State<EpisodePage> with WidgetsBindingObserver {
                   backgroundImage: NetworkImage(
                     podcast[0]['hero_image']['data']['url'],
                   ),
-                )
-            );
+                ));
           }
         } on TypeError {
           return const SizedBox.shrink();
@@ -167,6 +163,19 @@ class _EpisodePageState extends State<EpisodePage> with WidgetsBindingObserver {
                     colorBlendMode: BlendMode.modulate),
               ),
               Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 50, 80, 0),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      iconSize: 30,
+                      color: Colors.white,
+                      icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  )),
+              Padding(
                   padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
                   child: Align(
                     alignment: Alignment.topRight,
@@ -177,8 +186,7 @@ class _EpisodePageState extends State<EpisodePage> with WidgetsBindingObserver {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) =>  HomePage()),
+                          MaterialPageRoute(builder: (context) => HomePage()),
                         );
                       },
                     ),
@@ -203,36 +211,35 @@ class _EpisodePageState extends State<EpisodePage> with WidgetsBindingObserver {
                   )),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
-                child: Align(
-                    alignment: Alignment.bottomCenter, child: fitzLogo()),
+                child:
+                    Align(alignment: Alignment.bottomCenter, child: fitzLogo()),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 240, 0, 0),
-                child: Align(
-                    alignment: Alignment.bottomCenter, child: rosette()),
+                child:
+                    Align(alignment: Alignment.bottomCenter, child: rosette()),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 400, 0, 0),
                 child: Container(
-                  color: Colors.black,
-
+                  color: Colors.white,
                   child: Row(
                     children: [
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
-                          child: Text(
-                              podcast[0]['title'],
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 30.0, color: Colors.white)
-                          ),
+                          child: Text(podcast[0]['title'],
+                              textAlign: TextAlign.left,
+                              style: GoogleFonts.libreBaskerville(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                              )),
                         ),
                       )
                     ],
                   ),
                 ),
               ),
-
             ]),
             Padding(
                 padding: const EdgeInsets.fromLTRB(0, 1, 0, 2),
@@ -252,7 +259,6 @@ class _EpisodePageState extends State<EpisodePage> with WidgetsBindingObserver {
                   ),
                 )),
             leading,
-
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
@@ -264,8 +270,8 @@ class _EpisodePageState extends State<EpisodePage> with WidgetsBindingObserver {
                       child: Text(
                           DateFormat.yMMMMd('en_US').format(publicationDate!),
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 16.0, color: Colors.purple)
-                      ),
+                          style: const TextStyle(
+                              fontSize: 16.0, color: Colors.purple)),
                     ),
                   )
                 ],
@@ -279,7 +285,8 @@ class _EpisodePageState extends State<EpisodePage> with WidgetsBindingObserver {
                     child: MarkdownBody(
                       data: removeAllHtmlTags(podcast[0]['description']),
                       styleSheet: MarkdownStyleSheet(
-                        p: const TextStyle(color: Colors.black, fontSize: 16,height: 1.5),
+                        p: const TextStyle(
+                            color: Colors.black, fontSize: 16, height: 1.5),
                       ),
                     ),
                   ),
@@ -295,7 +302,7 @@ class _EpisodePageState extends State<EpisodePage> with WidgetsBindingObserver {
                   duration: positionData?.duration ?? Duration.zero,
                   position: positionData?.position ?? Duration.zero,
                   bufferedPosition:
-                  positionData?.bufferedPosition ?? Duration.zero,
+                      positionData?.bufferedPosition ?? Duration.zero,
                   onChangeEnd: _player.seek,
                 );
               },
@@ -311,26 +318,29 @@ class _EpisodePageState extends State<EpisodePage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.museum_outlined),
-        tooltip: "View all our highlights",
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) =>  HomePage()),
-          );
-        },
-      ),
-      resizeToAvoidBottomInset: false,
-      body: ListView(
-        children: <Widget>[
-          builder(widget.id),
-        ],
-      ),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.museum_outlined),
+          tooltip: "View all our highlights",
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+            );
+          },
+        ),
+        resizeToAvoidBottomInset: false,
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: <Widget>[
+                builder(widget.id),
+              ],
+            ),
+          ),
+        )
     );
   }
 }
-
 
 /// Displays the play/pause button and volume/speed sliders.
 class ControlButtons extends StatelessWidget {
@@ -375,15 +385,15 @@ class ControlButtons extends StatelessWidget {
                 if (processingState == ProcessingState.loading ||
                     processingState == ProcessingState.buffering) {
                   return Container(
-                    margin: EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
                     width: 64.0,
                     height: 64.0,
-                    child: CircularProgressIndicator(),
+                    child: const CircularProgressIndicator(),
                   );
                 } else if (playing != true) {
                   return CircleAvatar(
                     radius: 64.0,
-                    backgroundColor: Color(0xff94c29a),
+                    backgroundColor: const Color(0xff94c29a),
                     child: IconButton(
                       icon: const Icon(
                         Icons.play_arrow,
@@ -396,7 +406,7 @@ class ControlButtons extends StatelessWidget {
                 } else if (processingState != ProcessingState.completed) {
                   return CircleAvatar(
                     radius: 64.0,
-                    backgroundColor: Color(0xff94c29a),
+                    backgroundColor: const Color(0xff94c29a),
                     child: IconButton(
                       icon: const Icon(
                         Icons.pause,
@@ -408,7 +418,7 @@ class ControlButtons extends StatelessWidget {
                   );
                 } else {
                   return IconButton(
-                    icon: Icon(Icons.replay),
+                    icon: const Icon(Icons.replay),
                     iconSize: 64.0,
                     onPressed: () => player.seek(Duration.zero),
                   );
@@ -420,7 +430,7 @@ class ControlButtons extends StatelessWidget {
               stream: player.speedStream,
               builder: (context, snapshot) => IconButton(
                 icon: Text("${snapshot.data?.toStringAsFixed(1)}x",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
                 onPressed: () {
                   showSliderDialog(
                     context: context,
@@ -436,9 +446,6 @@ class ControlButtons extends StatelessWidget {
               ),
             ),
           ],
-        )
-    );
+        ));
   }
-
 }
-

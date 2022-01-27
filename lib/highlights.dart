@@ -3,13 +3,12 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'all.dart';
 import 'about.dart';
 import 'home.dart';
+import 'highlight.dart';
 
 class HighlightsPage extends ConsumerStatefulWidget {
   const HighlightsPage({Key? key}) : super(key: key);
@@ -38,24 +37,30 @@ class HighlightsPageState extends ConsumerState<HighlightsPage> {
         itemCount: results.length,
         itemBuilder: (context, index) {
           final result = results[index];
-          const high = 'https://fitzmuseum.cam.ac.uk/objects-and-artworks/highlights/';
           return Card(
               child: ListTile(
-                  leading: Image.network(result.image),
-                  title: Text(result.title),
+            leading: Image.network(result.image),
+            title: Text(result.title),
             trailing: const Icon(Icons.more_vert),
-            onTap: () async {
-              if (!await launch(high + result.url)) {
-                throw 'Could not launch ${high + result.url}';
-              }
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        HighlightPage(id: result.id.toString())),
+              );
             },
           ));
         },
       ),
       error: (e, st) =>
           Text(e.toString(), style: Theme.of(context).textTheme.headline5),
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
+      loading: () => const SizedBox(
+        height: 400,
+        width: 400,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
     );
   }
@@ -69,13 +74,12 @@ class HighlightsPageState extends ConsumerState<HighlightsPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  HomePage()),
+            MaterialPageRoute(builder: (context) => HomePage()),
           );
         },
       ),
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
-
         child: Center(
           child: Column(
             children: <Widget>[
@@ -102,6 +106,19 @@ class HighlightsPageState extends ConsumerState<HighlightsPage> {
                             context,
                             MaterialPageRoute(builder: (context) => HomePage()),
                           );
+                        },
+                      ),
+                    )),
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 50, 80, 0),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        iconSize: 30,
+                        color: Colors.white,
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                        onPressed: () {
+                          Navigator.pop(context);
                         },
                       ),
                     )),
@@ -137,7 +154,6 @@ class HighlightsPageState extends ConsumerState<HighlightsPage> {
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                 child: newsHeadlineText(),
               ),
-
               newsItems(),
               explore(),
             ],
@@ -149,21 +165,23 @@ class HighlightsPageState extends ConsumerState<HighlightsPage> {
 }
 
 class SearchResult {
-  SearchResult({
-      required this.title,
+  SearchResult(
+      {required this.title,
       required this.url,
-      required this.image
-  });
+      required this.image,
+      required this.id});
 
   final String title;
   final String url;
   final String image;
+  final String id;
 
   factory SearchResult.fromJson(Map<String, dynamic> data) {
     return SearchResult(
         title: data['title'],
         url: data['slug'],
         image: data['image']['data']['thumbnails'][2]['url'],
+        id: data['id'].toString()
     );
   }
 }

@@ -50,6 +50,12 @@ dependencies:
   audio_session: ^0.1.6+1
   card_swiper: ^2.0.1
   intl: ^0.17.0
+  flutter_staggered_grid_view: ^0.6.0
+  infinite_scroll_pagination: ^3.1.0
+  flutter_widget_from_html_core: ^0.8.4
+  fwfh_webview: ^0.6.2+1
+  model_viewer_plus: ^1.0.1+2
+  photo_view: ^0.13.0
 
 
 dev_dependencies:
@@ -110,3 +116,6 @@ flutter:
     - assets/pineapple.jpg
     - assets/rosette.png
     - assets/hockney.jpg
+    - assets/scene.glb
+    - assets/rosetteRotate.gif
+    - assets/pineApple.png

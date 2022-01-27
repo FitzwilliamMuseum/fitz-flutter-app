@@ -20,7 +20,9 @@ class FavoritesPage extends StatefulWidget {
 class _FavoritesPageState extends State<FavoritesPage> {
 
   fetchData(String id) async {
-    var request = await http.get(Uri.parse("https://collectionapi.metmuseum.org/public/collection/v1/objects/$id"));
+    var format = id + '/json';
+    final uri = "https://data.fitzmuseum.cam.ac.uk/id/object/" + format;
+    var request = await http.get(Uri.parse(uri + format));
 
     return request.body;
   }
@@ -248,7 +250,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
             child: builder()
           ),
           Image.asset(
-            'assets/pineapple.png',
+            'assets/pineApple.png',
             height: 200,
             width:  200,
           ),

@@ -8,9 +8,7 @@ import 'details_art.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({required this.text});
-
   final String text;
-
   @override
   _SearchPageState createState() => _SearchPageState();
 }

@@ -72,8 +72,12 @@ class CovidPageState extends ConsumerState<CovidPage> {
       ),
       error: (e, st) =>
           Text(e.toString(), style: Theme.of(context).textTheme.headline5),
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
+      loading: () =>  const SizedBox(
+        height: 400,
+        width: 400,
+        child:  Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
     );
   }
@@ -124,6 +128,20 @@ class CovidPageState extends ConsumerState<CovidPage> {
                     )
                 ),
                 Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 50, 80, 0),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        iconSize: 30,
+                        color: Colors.white,
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    )
+                ),
+                Padding(
                     padding: const EdgeInsets.fromLTRB(0, 50, 40, 20),
                     child: Align(
                       alignment: Alignment.topRight,
@@ -156,7 +174,6 @@ class CovidPageState extends ConsumerState<CovidPage> {
                 padding: const EdgeInsets.all(5.0),
                 child: newsHeadlineText(),
               ),
-              pineapple(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                 child:newsItems(),

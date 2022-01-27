@@ -3,11 +3,9 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'all.dart';
 import 'about.dart';
 import 'home.dart';
 import 'story.dart';
@@ -41,14 +39,15 @@ class NewsPageState extends ConsumerState<NewsPage> {
           final result = results[index];
           return Card(
               child: ListTile(
-                  leading: Image.network(result.image),
-                  title: Text(result.title),
-                subtitle: Text(result.date),
+            leading: Image.network(result.image),
+            title: Text(result.title),
+            subtitle: Text(result.date),
             trailing: const Icon(Icons.more_vert),
-            onTap: ()  {
+            onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) =>  StoryPage(id: result.id.toString())),
+                MaterialPageRoute(
+                    builder: (context) => StoryPage(id: result.id.toString())),
               );
             },
           ));
@@ -56,8 +55,10 @@ class NewsPageState extends ConsumerState<NewsPage> {
       ),
       error: (e, st) =>
           Text(e.toString(), style: Theme.of(context).textTheme.headline5),
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
+      loading: () => SizedBox(
+        height: 400,
+        width: 400,
+        child: Image.asset('assets/rosetteRotate.gif', height: 150, width: 150),
       ),
     );
   }
@@ -67,11 +68,11 @@ class NewsPageState extends ConsumerState<NewsPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.museum_outlined),
-        tooltip: "View all our highlights",
+        tooltip: "Go home",
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AllPage()),
+            MaterialPageRoute(builder: (context) => HomePage()),
           );
         },
       ),
@@ -107,6 +108,19 @@ class NewsPageState extends ConsumerState<NewsPage> {
                       ),
                     )),
                 Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 50, 80, 0),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        iconSize: 30,
+                        color: Colors.white,
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    )),
+                Padding(
                     padding: const EdgeInsets.fromLTRB(0, 50, 40, 20),
                     child: Align(
                       alignment: Alignment.topRight,
@@ -138,7 +152,6 @@ class NewsPageState extends ConsumerState<NewsPage> {
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                 child: newsHeadlineText(),
               ),
-
               newsItems(),
               explore(),
             ],
@@ -150,15 +163,13 @@ class NewsPageState extends ConsumerState<NewsPage> {
 }
 
 class SearchResult {
-  SearchResult({
-    required this.title,
+  SearchResult(
+      {required this.title,
       required this.date,
       required this.url,
       required this.excerpt,
       required this.image,
-      required this.id
-
-  });
+      required this.id});
 
   final String title;
   final String date;
@@ -174,8 +185,7 @@ class SearchResult {
         url: 'https://fitz.ms',
         image: data['field_image']['data']['thumbnails'][2]['url'],
         excerpt: data["article_excerpt"],
-        id: data['id'].toString()
-    );
+        id: data['id'].toString());
   }
 }
 
@@ -244,9 +254,7 @@ newsHeadlineText() {
         Flexible(
             child: Text("Latest News",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 30.0, color: Colors.black)
-            )
-        )
+                style: TextStyle(fontSize: 30.0, color: Colors.black)))
       ],
     ),
   );

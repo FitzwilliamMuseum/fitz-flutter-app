@@ -52,8 +52,10 @@ class PodcastsPageState extends ConsumerState<PodcastsPage> {
       ),
       error: (e, st) =>
           Text(e.toString(), style: Theme.of(context).textTheme.headline5),
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
+      loading: () => SizedBox(
+        height: 400,
+        width: 400,
+        child: Image.asset('assets/rosetteRotate.gif', height: 100, width: 100),
       ),
     );
   }
@@ -85,6 +87,19 @@ class PodcastsPageState extends ConsumerState<PodcastsPage> {
                       color: const Color.fromRGBO(117, 117, 117, 0.9),
                       colorBlendMode: BlendMode.modulate),
                 ),
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 50, 80, 0),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        iconSize: 30,
+                        color: Colors.white,
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    )),
                 Padding(
                     padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
                     child: Align(
