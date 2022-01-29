@@ -10,18 +10,18 @@ import 'covid.dart';
 import 'exhibitions.dart';
 import 'galleries.dart';
 import 'research.dart';
-
+import 'models.dart';
+import 'augmented.dart';
 void main() {
   runApp(const ProviderScope(child: FitzApp()));
 }
 
 class FitzApp extends StatelessWidget {
   const FitzApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: true,
+      debugShowCheckedModeBanner: false,
       title: 'The Fitzwilliam Museum',
       theme: ThemeData(
         iconTheme: const IconThemeData(
@@ -41,6 +41,8 @@ class FitzApp extends StatelessWidget {
         'exhibitions': (context) => const ExhibitionsPage(),
         'galleries': (context) => const GalleriesPage(),
         'research': (context) => const ResearchPage(),
+        '3d': (context) => const ModelsPage(),
+        'augmented':(context) => ObjectGesturesWidget(),
       },
     );
   }

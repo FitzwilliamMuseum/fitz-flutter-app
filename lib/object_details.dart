@@ -1,9 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+// import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+// import 'package:flutter_markdown/flutter_markdown.dart';
 import 'home.dart';
 import 'favorites.dart';
 import 'highlights.dart';
@@ -19,8 +23,7 @@ class ObjectPage extends StatefulWidget {
   _ObjectPageState createState() => _ObjectPageState();
 }
 
-class _ObjectPageState extends State<ObjectPage>  {
-
+class _ObjectPageState extends State<ObjectPage> {
   @override
   void initState() {
     super.initState();
@@ -32,18 +35,13 @@ class _ObjectPageState extends State<ObjectPage>  {
     ]);
   }
 
-
   String removeAllHtmlTags(String htmlText) {
-    RegExp exp = RegExp(
-        r"<[^>]*>",
-        multiLine: true,
-        caseSensitive: true
-    );
+    RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
     return htmlText.replaceAll(exp, '');
   }
 
-  fetchData(http.Client client,String id) async {
-    var format = id.replaceAll('object-','') + '/json';
+  fetchData(http.Client client, String id) async {
+    var format = id.replaceAll('object-', '') + '/json';
     final uri = "https://data.fitzmuseum.cam.ac.uk/id/object/" + format;
     final response = await client.get(Uri.parse(uri));
     if (response.statusCode == 200) {
@@ -54,40 +52,86 @@ class _ObjectPageState extends State<ObjectPage>  {
   fitzLogo() {
     return Image.asset('assets/Fitz_logo_white.png', height: 150, width: 150);
   }
+  _writeData(String id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var list = prefs.getStringList("favorites");
+
+    if (list!.contains(id)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("This item is already in your favorites!"),
+          )
+      );
+    }
+    else {
+      list.add(id);
+
+      prefs.setStringList("favorites", list);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text("Added to your favorites list"),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                _deleteData(id);
+              },
+            ),
+          )
+      );
+    }
+  }
+
+  _deleteData(String id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var list = prefs.getStringList("favorites");
+
+    list!.remove(id);
+
+    prefs.setStringList("favorites", list);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text("Removed from your favorites list"),
+          action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              _writeData(id);
+            },
+          ),
+        )
+    );
+  }
 
   builder(id) {
     final number = id.toString();
-    print(number);
-    if (number is int) {
-      print(number.toString());
-    } else {
-      print('fuck');
-    }
     return FutureBuilder(
-      future: fetchData(http.Client(),  number),
+      future: fetchData(http.Client(), number),
       builder: (BuildContext context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Align(
-            alignment: Alignment.center,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-              child: CircularProgressIndicator(),
+          return const SizedBox(
+            height: 400,
+            child:  Align(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                child: CircularProgressIndicator(),
+              ),
             ),
           );
         }
         final data = jsonDecode(snapshot.data.toString());
         final objectRecord = data;
-        print(data);
         final dynamic leading;
         const contentUrl = 'https://data.fitzmuseum.cam.ac.uk/imagestore/';
-
         try {
           if (objectRecord.containsKey('multimedia')) {
-            leading = Image.network(contentUrl + objectRecord['multimedia'][0]['processed']['large']['location'],
-                  fit: BoxFit.fill,
-                  color: const Color.fromRGBO(117, 117, 117, 0.9),
-                  colorBlendMode: BlendMode.modulate
-              );
+            leading = Image.network(
+                contentUrl +
+                    objectRecord['multimedia'][0]['processed']['large']
+                        ['location'],
+                fit: BoxFit.fitHeight
+            );
           } else {
             leading = SizedBox(
                 width: MediaQuery.of(context).size.width,
@@ -97,96 +141,89 @@ class _ObjectPageState extends State<ObjectPage>  {
                   backgroundImage: AssetImage(
                     'assets/Portico.jpg',
                   ),
-                )
-            );
+                ));
           }
         } on TypeError {
           return const SizedBox.shrink();
         }
+        final String title;
+        if (objectRecord.containsKey('title')) {
+          title = objectRecord['title'][0]['value'];
+        } else {
+          title = objectRecord['summary_title'];
+        }
+        final dynamic description;
+        if (objectRecord.containsKey('description')) {
+          description = objectRecord['description'][0]['value'];
+        } else {
+          description = 'No description recorded currently.';
+        }
+        final String accession;
+        if(objectRecord['identifier'][0]['accession_number'] != null){
+          accession = objectRecord['identifier'][0]['accession_number'].toString();
+        } else {
+          accession = '';
+        }
+
         return Column(
           children: <Widget>[
             Stack(children: <Widget>[
-              ImageFullScreenWrapperWidget(
-                child: leading,
-                dark: true,
-              ),
-              Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: IconButton(
-                      iconSize: 30,
-                      color: Colors.white,
-                      icon: const Icon(Icons.home),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>  HomePage()),
-                        );
-                      },
-                    ),
-                  )),
-              Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 50, 40, 20),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: IconButton(
-                      iconSize: 30,
-                      color: Colors.white,
-                      icon: const Icon(Icons.favorite),
-                      tooltip: "View your selected favourite objects",
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const FavoritesPage()),
-                        );
-                      },
-                    ),
-                  )),
-
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Container(
-                  color: Colors.black,
-
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text(
-                              objectRecord['summary_title'],
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 30.0, color: Colors.white)
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
+              SizedBox(
+                width: 400,
+                height: 400,
+                child: ImageFullScreenWrapperWidget(
+                  child: leading,
+                  dark: true,
                 ),
               ),
-
             ]),
             Padding(
-                padding: const EdgeInsets.fromLTRB(0, 1, 0, 2),
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                    iconSize: 30,
-                    color: Colors.white,
-                    icon: const Icon(Icons.info),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AboutPage()),
-                      );
-                    },
-                  ),
-                )),
-
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
+              child: Text(
+                title.toTitleCase(),
+                textAlign: TextAlign.center,
+                style: GoogleFonts.libreBaskerville(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
+              child: Text(
+                accession,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.libreBaskerville(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
+              child: Text(
+                description,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 6, 0, 7),
+              child: ElevatedButton(
+                onPressed: () {
+                  _writeData(number);
+                },
+                child: const Text('Add to your favourites'),
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.black,
+                    onPrimary: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(1)),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 10),
+                    textStyle: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold)),
+              ),
+            ),
             explore(),
             pineapple()
           ],
@@ -198,30 +235,97 @@ class _ObjectPageState extends State<ObjectPage>  {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Search"),
-        iconTheme: const IconThemeData(
-            color: Colors.white
-        ),
-      ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.museum_outlined),
-        tooltip: "View all our highlights",
+        tooltip: "Go home",
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  HomePage()),
+            MaterialPageRoute(builder: (context) => HomePage()),
           );
         },
       ),
       resizeToAvoidBottomInset: false,
-      body: ListView(
-        children: <Widget>[
-          builder(widget.id),
-        ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Stack(children: <Widget>[
+                builder(widget.id),
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 50, 80, 0),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        iconSize: 30,
+                        color: Colors.white,
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    )),
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        iconSize: 30,
+                        color: Colors.white,
+                        icon: const Icon(Icons.info),
+                        tooltip: "About",
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const AboutPage()),
+                          );
+                        },
+                      ),
+                    )),
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 50, 40, 20),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        iconSize: 30,
+                        color: Colors.white,
+                        icon: const Icon(Icons.favorite),
+                        tooltip: "View your selected favourite objects",
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const FavoritesPage()),
+                          );
+                        },
+                      ),
+                    )),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(30, 270, 0, 0),
+                  child: SizedBox(
+                    height: 75,
+                    width: 75,
+                    child: Align(
+                        alignment: Alignment.bottomRight, child: fitzlogo()),
+                  ),
+                ),
+
+              ]),
+
+            ],
+          ),
+        ),
       ),
     );
   }
 }
+extension StringCasingExtension on String {
+  String toCapitalized() =>
+      length > 0 ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
 
-
+  String toTitleCase() => replaceAll(RegExp(' +'), ' ')
+      .split(' ')
+      .map((str) => str.toCapitalized())
+      .join(' ');
+}

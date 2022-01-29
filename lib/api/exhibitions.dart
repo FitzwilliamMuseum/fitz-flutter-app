@@ -37,7 +37,7 @@ class Exhibitions {
 
 Future<List<Exhibitions>> fetch(http.Client client) async {
   final response = await client.get(Uri.parse(
-      'https://content.fitz.ms/fitz-website/items/exhibitions?fields=exhibition_title,id,slug,exhibition_narrative,exhibition_start_date,exhibition_end_date,hero_image.*,type,exhibition_status&sort=&sort=-exhibition_end_date&limit=12'));
+      'https://content.fitz.ms/fitz-website/items/exhibitions?fields=exhibition_title,id,slug,exhibition_narrative,exhibition_start_date,exhibition_end_date,hero_image.*,type,exhibition_status&sort=&sort=-exhibition_end_date&limit=12&filter[exhibition_status][eq]=current'));
   return compute(parseExhibits, utf8.decode(response.bodyBytes));
 }
 
@@ -57,6 +57,7 @@ class ExPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: FutureBuilder<List<Exhibitions>>(
         future: fetch(http.Client()),
         builder: (context, snapshot) {

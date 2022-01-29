@@ -91,24 +91,24 @@ class ExhibitionsPageState extends ConsumerState<ExhibitionsPage> {
                       colorBlendMode: BlendMode.modulate),
                 ),
                 Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
+                    padding: const EdgeInsets.fromLTRB(0, 50, 20, 20),
                     child: Align(
                       alignment: Alignment.topRight,
                       child: IconButton(
                         iconSize: 30,
                         color: Colors.white,
                         icon: const Icon(Icons.home),
-                        tooltip: "Go to app home page",
+                        tooltip: "About this app",
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
+                            MaterialPageRoute(builder: (context) => const AboutPage()),
                           );
                         },
                       ),
                     )),
                 Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 50, 80, 0),
+                    padding: const EdgeInsets.fromLTRB(0, 50, 60, 0),
                     child: Align(
                       alignment: Alignment.topRight,
                       child: IconButton(
@@ -120,23 +120,7 @@ class ExhibitionsPageState extends ConsumerState<ExhibitionsPage> {
                         },
                       ),
                     )),
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 50, 40, 20),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        iconSize: 30,
-                        color: Colors.white,
-                        icon: const Icon(Icons.info),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const AboutPage()),
-                          );
-                        },
-                      ),
-                    )),
+
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
                   child: Align(

@@ -88,7 +88,7 @@ class ResearchPageState extends ConsumerState<ResearchPage> {
                       colorBlendMode: BlendMode.modulate),
                 ),
                 Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 50, 80, 0),
+                    padding: const EdgeInsets.fromLTRB(0, 50, 60, 0),
                     child: Align(
                       alignment: Alignment.topRight,
                       child: IconButton(
@@ -100,25 +100,9 @@ class ResearchPageState extends ConsumerState<ResearchPage> {
                         },
                       ),
                     )),
+
                 Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        iconSize: 30,
-                        color: Colors.white,
-                        icon: const Icon(Icons.home),
-                        tooltip: "Go to app home page",
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                          );
-                        },
-                      ),
-                    )),
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 50, 40, 20),
+                    padding: const EdgeInsets.fromLTRB(0, 50, 20, 20),
                     child: Align(
                       alignment: Alignment.topRight,
                       child: IconButton(

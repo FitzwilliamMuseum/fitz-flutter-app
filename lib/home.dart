@@ -11,6 +11,7 @@ import 'about.dart';
 import 'favorites.dart';
 import 'api/exhibitions.dart';
 import 'api/explore_fitz_cards.dart';
+import 'ui/staggered_collection.dart';
 
 // ignore: use_key_in_widget_constructors
 class HomePage extends StatefulWidget {
@@ -19,15 +20,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   static String videoID = 'zrlEJ_3fWds';
   final YoutubePlayerController _controllerYT = YoutubePlayerController(
     initialVideoId: videoID,
+
     flags: const YoutubePlayerFlags(
       autoPlay: false,
       mute: false,
     ),
   );
 
+  // onEnterFullScreen: () {
+  // SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
+  // _controller.play();
+  // },
   @override
   void initState() {
     super.initState();
@@ -123,7 +130,8 @@ class _HomePageState extends State<HomePage> {
             controller: _controllerYT,
             liveUIColor: Colors.white,
             showVideoProgressIndicator: true,
-          )
+          ),
+
         ],
       ),
     );
@@ -148,13 +156,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
         child: Center(
           child: Column(
             children: <Widget>[
@@ -168,7 +175,7 @@ class _HomePageState extends State<HomePage> {
                       colorBlendMode: BlendMode.modulate),
                 ),
                 Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
+                    padding: const EdgeInsets.fromLTRB(0, 50, 20, 20),
                     child: Align(
                       alignment: Alignment.topRight,
                       child: IconButton(
@@ -185,7 +192,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     )),
                 Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 50, 40, 20),
+                    padding: const EdgeInsets.fromLTRB(0, 50, 60, 20),
                     child: Align(
                       alignment: Alignment.topRight,
                       child: IconButton(
@@ -272,11 +279,12 @@ class _HomePageState extends State<HomePage> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(10, 140, 20, 20),
                           child: Container(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               border: Border(
                                 top: BorderSide(
-                                    width: 4.0,
-                                    color: Colors.lightBlue.shade600),
+                                  width: 4.0,
+                                  color: Color(0xA1ADD5BB),
+                                ),
                               ),
                             ),
                             child: const Text('Our galleries',
@@ -296,7 +304,7 @@ class _HomePageState extends State<HomePage> {
                       child: Stack(children: <Widget>[
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, 'research');
+                            Navigator.pushNamed(context, '3d');
                           },
                           child: Image.network(
                             'https://fitz-cms-images.s3.eu-west-2.amazonaws.com/fitzwilliam-museum-19th-century-photograph.jpg',
@@ -310,16 +318,15 @@ class _HomePageState extends State<HomePage> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(10, 60, 10, 10),
                           child: Container(
-                            decoration:  BoxDecoration(
+                            decoration: const BoxDecoration(
                               border: Border(
-                                top:
-                                    BorderSide(
-                                        width: 2.0,
-                                        color: Colors.lightBlue.shade600
-                                    ),
+                                top: BorderSide(
+                                  width: 2.0,
+                                  color: Color(0xA1ADD5BB),
+                                ),
                               ),
                             ),
-                            child: const Text('Our history',
+                            child: const Text('3D models',
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                   fontSize: 14.0,
@@ -352,13 +359,10 @@ class _HomePageState extends State<HomePage> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(10, 60, 10, 10),
                           child: Container(
-                            decoration:  BoxDecoration(
+                            decoration: const BoxDecoration(
                               border: Border(
-                                top:
-                                    BorderSide(
-                                        width: 2.0,
-                                        color: Colors.lightBlue.shade600
-                                    ),
+                                top: BorderSide(
+                                    width: 2.0, color: Color(0xA1ADD5BB)),
                               ),
                             ),
                             child: const Text('Our research',
@@ -382,6 +386,7 @@ class _HomePageState extends State<HomePage> {
               Stack(children: const <Widget>[
                 SizedBox(height: 421, child: ExPage()),
               ]),
+              const StaggeredCollection(),
               pineapple(),
             ],
           ),

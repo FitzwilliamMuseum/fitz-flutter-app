@@ -75,7 +75,7 @@ class _ProjectPageState extends State<ProjectPage> {
         return Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
               child: Row(
                 children: [
                   SizedBox(
@@ -86,7 +86,7 @@ class _ProjectPageState extends State<ProjectPage> {
                         gallery["title"],
                         textAlign: TextAlign.center,
                         style: GoogleFonts.libreBaskerville(
-                          fontSize: 30,
+                          fontSize: 20,
                           fontWeight: FontWeight.w700,
                         ),
                       ),

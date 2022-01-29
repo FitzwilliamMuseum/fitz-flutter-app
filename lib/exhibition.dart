@@ -11,7 +11,6 @@ import 'highlights.dart';
 import 'about.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class ExhibitionPage extends StatefulWidget {
   const ExhibitionPage({Key? key, required this.id}) : super(key: key);
 
@@ -30,19 +29,16 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
     ]);
   }
 
-
   String removeAllHtmlTags(String htmlText) {
-    RegExp exp = RegExp(
-        r"<[^>]*>",
-        multiLine: true,
-        caseSensitive: true
-    );
+    RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
 
     return htmlText.replaceAll(exp, '');
   }
 
-  fetchData(http.Client client,String id) async {
-    final uri = "https://content.fitz.ms/fitz-website/items/exhibitions?fields=exhibition_title,exhibition_start_date,exhibition_end_date,tessitura_string,id,slug,exhibition_narrative,exhibition_abstract,hero_image.*,type,exhibition_status&sort=-exhibition_end_date&limit=1&filter[id][eq]=" + id;
+  fetchData(http.Client client, String id) async {
+    final uri =
+        "https://content.fitz.ms/fitz-website/items/exhibitions?fields=exhibition_title,exhibition_start_date,exhibition_end_date,tessitura_string,id,slug,exhibition_narrative,exhibition_abstract,hero_image.*,type,exhibition_status&sort=-exhibition_end_date&limit=1&filter[id][eq]=" +
+            id;
     final response = await client.get(Uri.parse(uri));
     if (response.statusCode == 200) {
       return (utf8.decode(response.bodyBytes));
@@ -55,7 +51,7 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
 
   builder(id) {
     return FutureBuilder(
-      future: fetchData(http.Client(),id),
+      future: fetchData(http.Client(), id),
       builder: (BuildContext context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Align(
@@ -70,12 +66,13 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
         final exhibition = data['data'];
         final SizedBox leading;
         final SizedBox tessitura;
-        final startDate = DateTime.tryParse(exhibition[0]['exhibition_start_date']);
+        final startDate =
+            DateTime.tryParse(exhibition[0]['exhibition_start_date']);
         final endDate = DateTime.tryParse(exhibition[0]['exhibition_end_date']);
         final tessituraString = exhibition[0]["tessitura_string"];
         final String narrative;
         try {
-          if(exhibition[0]['exhibition_narrative'] != null){
+          if (exhibition[0]['exhibition_narrative'] != null) {
             narrative = exhibition[0]['exhibition_narrative'];
           } else {
             narrative = exhibition[0]['exhibition_abstract'];
@@ -84,15 +81,18 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
           return const SizedBox.shrink();
         }
         _launchURL() async {
-          final url = 'https://tickets.museums.cam.ac.uk/overview/' + exhibition[0]["tessitura_string"];
+          final url = 'https://tickets.museums.cam.ac.uk/overview/' +
+              exhibition[0]["tessitura_string"];
           if (await canLaunch(url)) {
             await launch(url);
           } else {
             throw 'Could not launch $url';
           }
         }
+
         _launchGeneralURL() async {
-          const url = 'https://tickets.museums.cam.ac.uk/overview/generaladmission';
+          const url =
+              'https://tickets.museums.cam.ac.uk/overview/generaladmission';
           if (await canLaunch(url)) {
             await launch(url);
           } else {
@@ -108,14 +108,16 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
                 padding: const EdgeInsets.all(20.0),
                 child: ElevatedButton(
                   onPressed: _launchURL,
-                  child:  const Text('Book a ticket'),
+                  child: const Text('Book a ticket'),
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.red,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(1)),
-                      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-                      textStyle:
-                      const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)
-                  ),
+                      primary: Colors.black,
+                      onPrimary: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(1)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 10),
+                      textStyle: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
               ),
             );
@@ -126,14 +128,16 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
                 padding: const EdgeInsets.all(20.0),
                 child: ElevatedButton(
                   onPressed: _launchGeneralURL,
-                  child:  const Text('Book general admission'),
+                  child: const Text('Book general admission'),
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.redAccent,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-                      textStyle:
-                      const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
-                  ),
+                      primary: Colors.black,
+                      onPrimary: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(1)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 10),
+                      textStyle: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
               ),
             );
@@ -143,7 +147,6 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
         }
 
         try {
-
           if (exhibition[0]["hero_image"] == "") {
             leading = SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -155,15 +158,14 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
             );
           } else {
             leading = SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: 250,
-              child: CircleAvatar(
-                radius: 100.0,
-                backgroundImage: NetworkImage(
-                  exhibition[0]['hero_image']['data']['url'],
-                ),
-              )
-            );
+                width: MediaQuery.of(context).size.width,
+                height: 250,
+                child: CircleAvatar(
+                  radius: 100.0,
+                  backgroundImage: NetworkImage(
+                    exhibition[0]['hero_image']['data']['url'],
+                  ),
+                ));
           }
         } on TypeError {
           return const SizedBox.shrink();
@@ -179,24 +181,7 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
                     color: const Color.fromRGBO(117, 117, 117, 0.9),
                     colorBlendMode: BlendMode.modulate),
               ),
-              Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: IconButton(
-                      iconSize: 30,
-                      color: Colors.white,
-                      icon: const Icon(Icons.home),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>  HomePage()),
-                        );
-                      },
-                    ),
-                  )
-              ),
+
               Padding(
                   padding: const EdgeInsets.fromLTRB(0, 50, 80, 0),
                   child: Align(
@@ -209,8 +194,7 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
                         Navigator.pop(context);
                       },
                     ),
-                  )
-              ),
+                  )),
               Padding(
                   padding: const EdgeInsets.fromLTRB(0, 50, 40, 20),
                   child: Align(
@@ -231,39 +215,37 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
                   )),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
-                child: Align(
-                    alignment: Alignment.bottomCenter, child: fitzLogo()),
+                child:
+                    Align(alignment: Alignment.bottomCenter, child: fitzLogo()),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 240, 0, 0),
-                child: Align(
-                    alignment: Alignment.bottomCenter, child: rosette()),
+                child:
+                    Align(alignment: Alignment.bottomCenter, child: rosette()),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 400, 0, 0),
                 child: Container(
                   color: Colors.white,
-
                   child: Row(
                     children: [
                       Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Text(
-                              exhibition[0]['exhibition_title'],
-                          textAlign: TextAlign.left,
-                          style: GoogleFonts.libreBaskerville(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                          child: Text(
+                            exhibition[0]['exhibition_title'],
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.libreBaskerville(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
-                          ),
-                      ),
+                        ),
                       )
                     ],
                   ),
                 ),
               ),
-
             ]),
             Padding(
                 padding: const EdgeInsets.fromLTRB(0, 1, 0, 2),
@@ -283,7 +265,6 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
                   ),
                 )),
             leading,
-
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
@@ -293,11 +274,13 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
                     child: Align(
                       alignment: Alignment.center,
                       child: Text(
-                         DateFormat.yMMMMd('en_US').format(startDate!) + ' - ' + DateFormat.yMMMMd('en_US').format(endDate!),
-                         textAlign: TextAlign.center,
-                         style: const TextStyle(fontSize: 16.0, color: Colors.purple)
-                     ),
-                 ),
+                          DateFormat.yMMMMd('en_US').format(startDate!) +
+                              ' - ' +
+                              DateFormat.yMMMMd('en_US').format(endDate!),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              fontSize: 16.0, color: Colors.purple)),
+                    ),
                   )
                 ],
               ),
@@ -311,7 +294,8 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
                     child: MarkdownBody(
                       data: removeAllHtmlTags(narrative),
                       styleSheet: MarkdownStyleSheet(
-                        p: const TextStyle(color: Colors.black, fontSize: 16,height: 1.5),
+                        p: const TextStyle(
+                            color: Colors.black, fontSize: 16, height: 1.5),
                       ),
                     ),
                   ),
@@ -320,12 +304,6 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
             ),
             explore(),
             pineapple()
-
-
-
-
-
-
           ],
         );
       },
@@ -341,15 +319,19 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  HomePage()),
+            MaterialPageRoute(builder: (context) => HomePage()),
           );
         },
       ),
       resizeToAvoidBottomInset: false,
-      body: ListView(
-        children: <Widget>[
-          builder(widget.id),
-        ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              builder(widget.id),
+            ],
+          ),
+        ),
       ),
     );
   }

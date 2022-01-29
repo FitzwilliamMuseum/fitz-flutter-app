@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'favorites.dart';
 import 'home.dart';
 import 'utilities/icons.dart';
-import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({Key? key}) : super(key: key);
@@ -55,16 +54,13 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('About this app'),
-      // ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.museum_outlined),
         tooltip: "View all our highlights",
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  HomePage()),
+            MaterialPageRoute(builder: (context) => HomePage()),
           );
         },
       ),
@@ -95,8 +91,7 @@ class _AboutPageState extends State<AboutPage> {
                             Navigator.pop(context);
                           },
                         ),
-                      )
-                  ),
+                      )),
                   Padding(
                       padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
                       child: Align(
@@ -145,31 +140,10 @@ class _AboutPageState extends State<AboutPage> {
                   ),
                 ],
               ),
+              Padding(padding: const EdgeInsets.all(20.0), child: aboutText()),
               Padding(
-                  padding: const EdgeInsets.all(20.0), child: aboutText()
-              ),
-              Padding(
-                  padding: const EdgeInsets.all(20.0), child: aboutTextBody()
-              ),
-
-              SizedBox(
-                width: 400,
-                height: 400,
-                child: ModelViewer(
-                  backgroundColor: Color.fromARGB(0xFF, 0xEE, 0xEE, 0xEE),
-                  src: 'assets/scene.glb',
-                  alt: "A 3D model of an astronaut",
-                  ar: true,
-                  autoRotate: false,
-                  cameraControls: true,
-                ),
-              ),
-      SizedBox(
-        width: 400,
-        height: 100,
-        child:pineapples()
-      ),
-
+                  padding: const EdgeInsets.all(20.0), child: aboutTextBody()),
+              SizedBox(width: 400, height: 100, child: pineapples()),
             ],
           ),
         ),

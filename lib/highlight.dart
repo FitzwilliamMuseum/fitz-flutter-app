@@ -183,7 +183,7 @@ class _HighlightPageState extends State<HighlightPage> {
               Stack(children: <Widget>[
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  height: 400,
+                  height: 370,
                   child: Image.asset("assets/Portico.jpg",
                       fit: BoxFit.fill,
                       color: const Color.fromRGBO(117, 117, 117, 0.9),

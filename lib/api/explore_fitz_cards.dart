@@ -56,6 +56,7 @@ class ExploreActionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: FutureBuilder<List<Actions>>(
         future: fetch(http.Client()),
         builder: (context, snapshot) {

@@ -56,6 +56,10 @@ dependencies:
   fwfh_webview: ^0.6.2+1
   model_viewer_plus: ^1.0.1+2
   photo_view: ^0.13.0
+  ar_flutter_plugin: ^0.6.2
+  flutter_archive: ^4.1.1
+  day_night_switcher: ^0.2.0+1
+  cached_network_image: ^3.2.0
 
 
 dev_dependencies:
@@ -116,6 +120,5 @@ flutter:
     - assets/pineapple.jpg
     - assets/rosette.png
     - assets/hockney.jpg
-    - assets/scene.glb
     - assets/rosetteRotate.gif
     - assets/pineApple.png
