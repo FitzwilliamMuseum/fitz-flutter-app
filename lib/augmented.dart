@@ -10,18 +10,15 @@ import 'package:ar_flutter_plugin/datatypes/node_types.dart';
 import 'package:ar_flutter_plugin/datatypes/hittest_result_types.dart';
 import 'package:ar_flutter_plugin/models/ar_node.dart';
 import 'package:ar_flutter_plugin/models/ar_hittest_result.dart';
-import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math_64.dart';
-import 'dart:math';
-import 'dummy_data.dart';
 
-class ObjectGesturesWidget extends StatefulWidget {
-  ObjectGesturesWidget({Key? key}) : super(key: key);
+class ObjectsOnPlanesWidget extends StatefulWidget {
+  ObjectsOnPlanesWidget({Key? key}) : super(key: key);
   @override
-  _ObjectGesturesWidgetState createState() => _ObjectGesturesWidgetState();
+  _ObjectsOnPlanesWidgetState createState() => _ObjectsOnPlanesWidgetState();
 }
 
-class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
+class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
   late ARSessionManager arSessionManager;
   late ARObjectManager arObjectManager;
   late ARAnchorManager arAnchorManager;
@@ -37,12 +34,9 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
 
   @override
   Widget build(BuildContext context) {
-    const String mealId = "m1";
-    final selectedMeal = DUMMY_MEALS.firstWhere((meal) => meal.id == mealId);
-
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Object Transformation Gestures'),
+          title: const Text('Anchors & Objects on Planes'),
         ),
         body: Container(
             child: Stack(children: [
@@ -77,18 +71,11 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
       showPlanes: true,
       customPlaneTexturePath: "Images/triangle.png",
       showWorldOrigin: true,
-      handlePans: true,
-      handleRotation: true,
     );
     this.arObjectManager.onInitialize();
 
     this.arSessionManager.onPlaneOrPointTap = onPlaneOrPointTapped;
-    this.arObjectManager.onPanStart = onPanStarted;
-    this.arObjectManager.onPanChange = onPanChanged;
-    this.arObjectManager.onPanEnd = onPanEnded;
-    this.arObjectManager.onRotationStart = onRotationStarted;
-    this.arObjectManager.onRotationChange = onRotationChanged;
-    this.arObjectManager.onRotationEnd = onRotationEnded;
+    this.arObjectManager.onNodeTap = onNodeTapped;
   }
 
   Future<void> onRemoveEverything() async {
@@ -101,6 +88,11 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
     anchors = [];
   }
 
+  Future<void> onNodeTapped(List<String> nodes) async {
+    var number = nodes.length;
+    this.arSessionManager.onError("Tapped $number node(s)");
+  }
+
   Future<void> onPlaneOrPointTapped(
       List<ARHitTestResult> hitTestResults) async {
     var singleHitTestResult = hitTestResults.firstWhere(
@@ -109,19 +101,19 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
       var newAnchor =
       ARPlaneAnchor(transformation: singleHitTestResult.worldTransform);
       bool? didAddAnchor = await this.arAnchorManager.addAnchor(newAnchor);
-      if (didAddAnchor == true) {
+      if (didAddAnchor != null) {
         this.anchors.add(newAnchor);
         // Add note to anchor
         var newNode = ARNode(
             type: NodeType.webGLB,
             uri:
-            "https://github.com/agnieve70/3dObjects/blob/main/Fishty.glb?raw=true",
-            scale: Vector3(1.4, 1.4, 1.4),
+            "https://fitz-cms-images.s3.eu-west-2.amazonaws.com/scene.glb",
+            scale: Vector3(0.2, 0.2, 0.2),
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
         bool? didAddNodeToAnchor =
         await this.arObjectManager.addNode(newNode, planeAnchor: newAnchor);
-        if (didAddNodeToAnchor == true) {
+        if (didAddNodeToAnchor != null) {
           this.nodes.add(newNode);
         } else {
           this.arSessionManager.onError("Adding Node to Anchor failed");
@@ -129,46 +121,17 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
       } else {
         this.arSessionManager.onError("Adding Anchor failed");
       }
+      /*
+      // To add a node to the tapped position without creating an anchor, use the following code (Please mind: the function onRemoveEverything has to be adapted accordingly!):
+      var newNode = ARNode(
+          type: NodeType.localGLTF2,
+          uri: "Models/Chicken_01/Chicken_01.gltf",
+          scale: Vector3(0.2, 0.2, 0.2),
+          transformation: singleHitTestResult.worldTransform);
+      bool didAddWebNode = await this.arObjectManager.addNode(newNode);
+      if (didAddWebNode) {
+        this.nodes.add(newNode);
+      }*/
     }
-  }
-
-  onPanStarted(String nodeName) {
-    print("Started panning node " + nodeName);
-  }
-
-  onPanChanged(String nodeName) {
-    print("Continued panning node " + nodeName);
-  }
-
-  onPanEnded(String nodeName, Matrix4 newTransform) {
-    print("Ended panning node " + nodeName);
-    final pannedNode =
-    this.nodes.firstWhere((element) => element.name == nodeName);
-
-    /*
-    * Uncomment the following command if you want to keep the transformations of the Flutter representations of the nodes up to date
-    * (e.g. if you intend to share the nodes through the cloud)
-    */
-    //pannedNode.transform = newTransform;
-  }
-
-  onRotationStarted(String nodeName) {
-    print("Started rotating node " + nodeName);
-  }
-
-  onRotationChanged(String nodeName) {
-    print("Continued rotating node " + nodeName);
-  }
-
-  onRotationEnded(String nodeName, Matrix4 newTransform) {
-    print("Ended rotating node " + nodeName);
-    final rotatedNode =
-    this.nodes.firstWhere((element) => element.name == nodeName);
-
-    /*
-    * Uncomment the following command if you want to keep the transformations of the Flutter representations of the nodes up to date
-    * (e.g. if you intend to share the nodes through the cloud)
-    */
-    //rotatedNode.transform = newTransform;
   }
 }

@@ -6,10 +6,10 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'object_details.dart';
-import 'home.dart';
 import 'utilities/icons.dart';
 import 'favorites.dart';
 import 'about.dart';
+import 'utilities/string_casing.dart';
 
 class SearchResultsPage extends StatefulWidget {
   const SearchResultsPage({Key? key, required this.text}) : super(key: key);
@@ -173,7 +173,8 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                                 width: 60,
                                 height: 60,
                               ),
-                            )),
+                            )
+                        ),
                         Column(
                           children: <Widget>[
                             Padding(
@@ -185,7 +186,10 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                             ),
                           ],
                         )
-                      ])));
+                      ]
+                      )
+                  )
+              );
             },
           );
         } else {
@@ -203,16 +207,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     var text = widget.text;
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.museum_outlined),
-        tooltip: "Go home",
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-          );
-        },
-      ),
+      floatingActionButton: floatingHomeButton(context),
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Center(
@@ -240,7 +235,8 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                             Navigator.pop(context);
                           },
                         ),
-                      )),
+                      )
+                  ),
                   Padding(
                       padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
                       child: Align(
@@ -258,7 +254,8 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                             );
                           },
                         ),
-                      )),
+                      )
+                  ),
                   Padding(
                       padding: const EdgeInsets.fromLTRB(0, 50, 40, 20),
                       child: Align(
@@ -276,16 +273,18 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                             );
                           },
                         ),
-                      )),
+                      )
+                  ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
                     child: Align(
-                        alignment: Alignment.bottomCenter, child: fitzlogo()),
+                        alignment: Alignment.bottomCenter, child: fitzLogo()),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 230, 0, 0),
                     child: Align(
-                        alignment: Alignment.bottomCenter, child: rosette()),
+                        alignment: Alignment.bottomCenter, child: rosetteSingle()
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(30, 330, 30, 20),
@@ -299,7 +298,9 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                                 MaterialPageRoute(
                                     builder: (BuildContext context) =>
                                         SearchResultsPage(
-                                            text: _controller.text)));
+                                            text: _controller.text)
+                                )
+                            );
                           },
                           decoration: const InputDecoration(
                               prefixIcon: Icon(Icons.search),
@@ -311,15 +312,16 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                               filled: true,
                               hintText: "Search our collection",
                               fillColor: Colors.white),
-                        )),
+                        )
+                    ),
                   ),
                 ],
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                 child: Text('Your search results for ' + widget.text,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 30.0, color: Colors.black)),
+                    style: const TextStyle(fontSize: 30.0, color: Colors.black)),
               ),
               builder(text),
               SizedBox(width: 400, height: 100, child: pineapples()),

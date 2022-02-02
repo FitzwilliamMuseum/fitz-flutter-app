@@ -4,14 +4,13 @@ import 'package:http/http.dart' as http;
 import 'package:fitz_museum_app/search_results.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-
-// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'about.dart';
 import 'favorites.dart';
 import 'api/exhibitions.dart';
 import 'api/explore_fitz_cards.dart';
 import 'ui/staggered_collection.dart';
+import 'package:vimeo_player_flutter/vimeo_player_flutter.dart';
 
 // ignore: use_key_in_widget_constructors
 class HomePage extends StatefulWidget {
@@ -22,6 +21,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   static String videoID = 'zrlEJ_3fWds';
+
+  static String vimeoid = '356279697';
+
   final YoutubePlayerController _controllerYT = YoutubePlayerController(
     initialVideoId: videoID,
 
@@ -31,10 +33,6 @@ class _HomePageState extends State<HomePage> {
     ),
   );
 
-  // onEnterFullScreen: () {
-  // SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
-  // _controller.play();
-  // },
   @override
   void initState() {
     super.initState();
@@ -387,7 +385,143 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(height: 421, child: ExPage()),
               ]),
               const StaggeredCollection(),
+              Container(
+                height: 250,
+                child: VimeoPlayer(
+                  videoId: vimeoid,
+                ),
+              ),
               pineapple(),
+              StaggeredGrid.count(
+                crossAxisCount: 4,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                children: [
+                  StaggeredGridTile.count(
+                    crossAxisCellCount: 2,
+                    mainAxisCellCount: 2,
+                    child: SizedBox(
+                      height: 300,
+                      child: Stack(children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, 'galleries');
+                          },
+                          child: Image.network(
+                            "https://fitz-cms-images.s3.eu-west-2.amazonaws.com/fitzwilliam-museum-main-entrance-2018_3-1.jpg",
+                            fit: BoxFit.cover,
+                            height: 300,
+                            colorBlendMode: BlendMode.modulate,
+                            color: const Color.fromRGBO(255, 255, 255, 0.9),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 140, 20, 20),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                top: BorderSide(
+                                  width: 4.0,
+                                  color: Color(0xA1ADD5BB),
+                                ),
+                              ),
+                            ),
+                            child: const Text('Our galleries',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontSize: 20.0, color: Colors.white)),
+                          ),
+                        )
+                      ]),
+                    ),
+                  ),
+                  StaggeredGridTile.count(
+                    crossAxisCellCount: 2,
+                    mainAxisCellCount: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(0),
+                      child: Stack(children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, '3d');
+                          },
+                          child: Image.network(
+                            'https://fitz-cms-images.s3.eu-west-2.amazonaws.com/fitzwilliam-museum-19th-century-photograph.jpg',
+                            fit: BoxFit.fill,
+                            height: 300,
+                            width: 300,
+                            colorBlendMode: BlendMode.modulate,
+                            color: const Color.fromRGBO(117, 117, 117, 0.9),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 60, 10, 10),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                top: BorderSide(
+                                  width: 2.0,
+                                  color: Color(0xA1ADD5BB),
+                                ),
+                              ),
+                            ),
+                            child: const Text('3D models',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.white,
+                                )),
+                          ),
+                        )
+                      ]),
+                    ),
+                  ),
+                  StaggeredGridTile.count(
+                    crossAxisCellCount: 2,
+                    mainAxisCellCount: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(0),
+                      child: Stack(children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, 'augmented');
+                          },
+                          child: Image.network(
+                            'https://fitz-cms-images.s3.eu-west-2.amazonaws.com/xrf-analysis-of-an-illuminated-mss-at-the-fitz-1.jpg',
+                            fit: BoxFit.fill,
+                            height: 300,
+                            width: 300,
+                            colorBlendMode: BlendMode.modulate,
+                            color: const Color.fromRGBO(117, 117, 117, 0.9),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 60, 10, 10),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                top: BorderSide(
+                                    width: 2.0, color: Color(0xA1ADD5BB)),
+                              ),
+                            ),
+                            child: const Text('Our research',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.white,
+                                )),
+                          ),
+                        )
+                      ]),
+                    ),
+                  ),
+                  StaggeredGridTile.count(
+                    crossAxisCellCount: 4,
+                    mainAxisCellCount: 2,
+                    child: youtube(),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

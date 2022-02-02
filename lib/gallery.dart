@@ -1,14 +1,14 @@
 import 'dart:convert';
+import 'package:fitz_museum_app/360_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:http/http.dart' as http;
 
 import 'home.dart';
-import 'highlights.dart';
-import 'about.dart';
 import 'utilities/fullscreen.dart';
+import 'utilities/icons.dart';
+import 'utilities/string_replace.dart';
 
 class GalleryPage extends StatefulWidget {
   const GalleryPage({Key? key, required this.id}) : super(key: key);
@@ -27,113 +27,12 @@ class _GalleryPageState extends State<GalleryPage> {
     ]);
   }
 
-  String removeAllHtmlTags(String htmlText) {
-    RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
-    return htmlText.replaceAll(exp, '');
-  }
-
-  fetchData(http.Client client, String id) async {
-    final uri =
-        "https://content.fitz.ms/fitz-website/items/galleries?fields=gallery_name,id,slug,gallery_status,hero_image.*&sort=id&filter[id][eq]=" +
-            id;
-    final response = await client.get(Uri.parse(uri));
-    if (response.statusCode == 200) {
-      return (utf8.decode(response.bodyBytes));
-    }
-  }
-
-  fitzLogo() {
-    return Image.asset('assets/Fitz_logo_white.png', height: 150, width: 150);
-  }
-
-  builder(id) {
-    return FutureBuilder(
-      future: fetchData(http.Client(), id),
-      builder: (BuildContext context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return  Align(
-            alignment: Alignment.center,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-              child: SizedBox(
-                  height: 100, width: 100,
-                  child: Image.asset('assets/rosetteRotate.gif', height: 150, width: 150)
-              ),
-            ),
-          );
-        }
-        final data = jsonDecode(snapshot.data.toString());
-        final gallery = data['data'][0];
-        final dynamic leading;
-        leading = ImageFullScreenWrapperWidget(
-          child: Image.network(
-            gallery['hero_image']['data']['url'],
-          ),
-          dark: true,
-        );
-
-        return Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 40,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        gallery["gallery_name"],
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.libreBaskerville(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-
-            leading,
-            // Padding(
-            //   padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-            //   child: Row(
-            //     children: [
-            //       Expanded(
-            //         child: MarkdownBody(
-            //           data: removeAllHtmlTags(gallery['description']),
-            //           styleSheet: MarkdownStyleSheet(
-            //             p: const TextStyle(
-            //                 color: Colors.black, fontSize: 16, height: 1.5),
-            //             blockquote: const TextStyle(
-            //                 color: Colors.red, fontSize: 16, height: 1.5),
-            //           ),
-            //         ),
-            //       ),
-            //
-            //     ],
-            //   ),
-            // ),
-            Chip(
-              label:  Text(gallery["gallery_status"][0]!),
-            ),
-            explore(),
-            pineapple(),
-
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.museum_outlined),
-        tooltip: "View all our highlights",
+        tooltip: "Go home",
         onPressed: () {
           Navigator.push(
             context,
@@ -147,70 +46,12 @@ class _GalleryPageState extends State<GalleryPage> {
           child: Column(
             children: <Widget>[
               Stack(children: <Widget>[
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 400,
-                  child: Image.asset("assets/Portico.jpg",
-                      fit: BoxFit.fill,
-                      color: const Color.fromRGBO(117, 117, 117, 0.9),
-                      colorBlendMode: BlendMode.modulate),
-                ),
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        iconSize: 30,
-                        color: Colors.white,
-                        icon: const Icon(Icons.home),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                          );
-                        },
-                      ),
-                    )),
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 50, 80, 0),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        iconSize: 30,
-                        color: Colors.white,
-                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    )),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
-                  child: Align(
-                      alignment: Alignment.bottomCenter, child: fitzLogo()),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 240, 0, 0),
-                  child: Align(
-                      alignment: Alignment.bottomCenter, child: rosette()),
-                ),
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 50, 40, 20),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        iconSize: 30,
-                        color: Colors.white,
-                        icon: const Icon(Icons.info),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const AboutPage()),
-                          );
-                        },
-                      ),
-                    )),
+                portico(context),
+                backIcon(context),
+                aboutIcon(context),
+                homeLogo(),
+                homeRosette(),
+                // favoritesIcon(context),
               ]),
               builder(widget.id),
             ],
@@ -218,5 +59,188 @@ class _GalleryPageState extends State<GalleryPage> {
         ),
       ),
     );
+  }
+
+  fetchData(http.Client client, String id) async {
+    final uri =
+        "https://content.fitz.ms/fitz-website/items/galleries?fields=gallery_name,id,slug,gallery_description,gallery_status,hero_image.*,image_360_pano.*&sort=id&filter[id][eq]=" +
+            id;
+    final response = await client.get(Uri.parse(uri));
+    if (response.statusCode == 200) {
+      return (utf8.decode(response.bodyBytes));
+    }
+  }
+
+
+
+  Widget builder(id) {
+    return FutureBuilder(
+        future: fetchData(http.Client(), id),
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+           const _LoadingIcon();
+          }
+          if (snapshot.hasData) {
+            final data = jsonDecode(snapshot.data.toString());
+
+            final gallery = data['data'][0];
+
+            return Column(
+              children: <Widget>[
+                _GalleryTitle(gallery: gallery),
+                _HeaderImage(gallery: gallery),
+                _ThreeSixtyButton(gallery: gallery),
+                _GalleryDescription(gallery: gallery),
+                _Chip(gallery: gallery),
+                pineappleSingle(),
+              ],
+            );
+          } else {
+            return Container();
+          }
+        });
+  }
+
+}
+
+class _HeaderImage extends StatelessWidget {
+  const _HeaderImage({Key? key, required this.gallery}) : super(key: key);
+  final dynamic gallery;
+
+  @override
+  Widget build(BuildContext context) {
+    if (gallery['hero_image'] != null) {
+      return ImageFullScreenWrapperWidget(
+        child: Image.network(
+          gallery['hero_image']['data']['url'],
+        ),
+        dark: true,
+      );
+    } else {
+      return Container();
+    }
+  }
+}
+
+class _Chip extends StatelessWidget {
+  const _Chip({Key? key, required this.gallery})
+      : super(key: key);
+  final dynamic gallery;
+  @override
+  Widget build(BuildContext context) {
+    return Chip(
+      label: Text(gallery["gallery_status"][0]),
+    );
+  }
+}
+
+
+class _GalleryDescription extends StatelessWidget {
+  const _GalleryDescription({Key? key, required this.gallery})
+      : super(key: key);
+  final dynamic gallery;
+
+  @override
+  Widget build(BuildContext context) {
+    if (gallery["gallery_description"] != null) {
+      return Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: MarkdownBody(
+          data: removeAllHtmlTags(gallery["gallery_description"]),
+          styleSheet: MarkdownStyleSheet(
+            p: const TextStyle(color: Colors.black, fontSize: 16),
+          ),
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+}
+
+class _GalleryTitle extends StatelessWidget {
+  const _GalleryTitle({Key? key, required this.gallery})
+      : super(key: key);
+  final dynamic gallery;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+      child: Row(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width - 40,
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(gallery["gallery_name"],
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 20.0, color: Colors.black)),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _LoadingIcon extends StatelessWidget {
+  const _LoadingIcon({Key? key})
+      : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+        child: SizedBox(
+            height: 100,
+            width: 100,
+            child: Image.asset('assets/rosetteRotate.gif',
+                height: 150, width: 150)),
+      ),
+    );
+  }
+}
+
+class _ThreeSixtyButton extends StatelessWidget{
+  const _ThreeSixtyButton({Key? key, required this.gallery})
+      : super(key: key);
+  final dynamic gallery;
+
+  @override
+  Widget build(BuildContext context) {
+    if (gallery['image_360_pano'] != null) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(8, 6, 0, 0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          gallery_360_page(id: gallery['id'].toString())),
+                );
+              },
+              child: const Text('View in 360'),
+              style: ElevatedButton.styleFrom(
+                  primary: Colors.black,
+                  onPrimary: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+                  textStyle: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container();
+    }
   }
 }

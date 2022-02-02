@@ -1,6 +1,6 @@
+import 'package:fitz_museum_app/utilities/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'home.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 class ModelsPage extends StatefulWidget {
@@ -22,17 +22,8 @@ class _ModelsPageState extends State<ModelsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff00BCD1),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.museum_outlined),
-        tooltip: "Go Home",
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-          );
-        },
-      ),
+      backgroundColor: const Color(0xffa8d0c8),
+      floatingActionButton: floatingHomeButton(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: const BottomAppBar(
         color: Colors.black,

@@ -8,11 +8,11 @@ import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 
 // import 'package:flutter_markdown/flutter_markdown.dart';
-import 'home.dart';
-import 'favorites.dart';
-import 'highlights.dart';
-import 'about.dart';
+
 import 'utilities/fullscreen.dart';
+import 'utilities/icons.dart';
+import 'utilities/string_casing.dart';
+import 'utilities/string_replace.dart';
 
 class ObjectPage extends StatefulWidget {
   const ObjectPage({Key? key, required this.id}) : super(key: key);
@@ -27,17 +27,9 @@ class _ObjectPageState extends State<ObjectPage> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.black,
-    ));
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-  }
-
-  String removeAllHtmlTags(String htmlText) {
-    RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
-    return htmlText.replaceAll(exp, '');
   }
 
   fetchData(http.Client client, String id) async {
@@ -49,9 +41,6 @@ class _ObjectPageState extends State<ObjectPage> {
     }
   }
 
-  fitzLogo() {
-    return Image.asset('assets/Fitz_logo_white.png', height: 150, width: 150);
-  }
   _writeData(String id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var list = prefs.getStringList("favorites");
@@ -224,8 +213,7 @@ class _ObjectPageState extends State<ObjectPage> {
                         fontSize: 16, fontWeight: FontWeight.bold)),
               ),
             ),
-            explore(),
-            pineapple()
+            pineappleSingle()
           ],
         );
       },
@@ -235,97 +223,25 @@ class _ObjectPageState extends State<ObjectPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.museum_outlined),
-        tooltip: "Go home",
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-          );
-        },
-      ),
+      floatingActionButton: floatingHomeButton(context),
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Center(
           child: Column(
             children: <Widget>[
               Stack(children: <Widget>[
-                builder(widget.id),
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 50, 80, 0),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        iconSize: 30,
-                        color: Colors.white,
-                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    )),
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        iconSize: 30,
-                        color: Colors.white,
-                        icon: const Icon(Icons.info),
-                        tooltip: "About",
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const AboutPage()),
-                          );
-                        },
-                      ),
-                    )),
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 50, 40, 20),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        iconSize: 30,
-                        color: Colors.white,
-                        icon: const Icon(Icons.favorite),
-                        tooltip: "View your selected favourite objects",
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const FavoritesPage()),
-                          );
-                        },
-                      ),
-                    )),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(30, 270, 0, 0),
-                  child: SizedBox(
-                    height: 75,
-                    width: 75,
-                    child: Align(
-                        alignment: Alignment.bottomRight, child: fitzlogo()),
-                  ),
-                ),
-
+                portico(context),
+                backIcon(context),
+                aboutIcon(context),
+                homeLogo(),
+                homeRosette(),
+                // favoritesIcon(context),
               ]),
-
+              builder(widget.id),
             ],
           ),
         ),
       ),
     );
   }
-}
-extension StringCasingExtension on String {
-  String toCapitalized() =>
-      length > 0 ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
-
-  String toTitleCase() => replaceAll(RegExp(' +'), ' ')
-      .split(' ')
-      .map((str) => str.toCapitalized())
-      .join(' ');
 }

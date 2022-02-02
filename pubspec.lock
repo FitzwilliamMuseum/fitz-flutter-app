@@ -237,6 +237,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
+  flutter_cube:
+    dependency: transitive
+    description:
+      name: flutter_cube
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
   flutter_html:
     dependency: "direct main"
     description:
@@ -272,13 +279,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  flutter_scroll_to_top:
+    dependency: "direct main"
+    description:
+      name: flutter_scroll_to_top
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.1"
   flutter_staggered_grid_view:
     dependency: "direct main"
     description:
       name: flutter_staggered_grid_view
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.0"
+    version: "0.6.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -309,14 +323,14 @@ packages:
       name: fwfh_text_style
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.7.2"
+    version: "2.7.3"
   fwfh_webview:
     dependency: "direct main"
     description:
       name: fwfh_webview
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.2+1"
+    version: "0.6.2+2"
   geolocator:
     dependency: transitive
     description:
@@ -428,7 +442,7 @@ packages:
       name: just_audio_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.2"
+    version: "0.4.3"
   lints:
     dependency: transitive
     description:
@@ -464,6 +478,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1+2"
+  motion_sensors:
+    dependency: transitive
+    description:
+      name: motion_sensors
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   mp3_info:
     dependency: "direct main"
     description:
@@ -492,6 +513,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  page_transition:
+    dependency: "direct main"
+    description:
+      name: page_transition
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.5"
+  panorama:
+    dependency: "direct main"
+    description:
+      name: panorama
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.1"
   path:
     dependency: transitive
     description:
@@ -790,14 +825,14 @@ packages:
       name: url_launcher_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.3"
   url_launcher_macos:
     dependency: transitive
     description:
       name: url_launcher_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.3"
   url_launcher_platform_interface:
     dependency: transitive
     description:
@@ -833,6 +868,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  vimeo_player_flutter:
+    dependency: "direct main"
+    description:
+      name: vimeo_player_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.3+2"
   webview_flutter:
     dependency: transitive
     description:
@@ -867,7 +909,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.6"
+    version: "2.3.8"
   xdg_directories:
     dependency: transitive
     description:

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
-
 class ImageFullScreenWrapperWidget extends StatelessWidget {
   final Image child;
   final bool dark;
@@ -36,10 +34,7 @@ class ImageFullScreenWrapperWidget extends StatelessWidget {
 }
 
 class FullScreenPage extends StatefulWidget {
-  const FullScreenPage({
-    required this.child,
-    required this.dark,
-  });
+  const FullScreenPage({ Key? key, required this.child, required this.dark}): super(key: key);
 
   final Image child;
   final bool dark;

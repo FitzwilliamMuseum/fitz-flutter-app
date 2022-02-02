@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'error.dart';
 import 'home.dart';
 import 'dart:async';
+import 'ui/fullbackground.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -35,13 +36,14 @@ class _SplashScreenState extends State<SplashScreen> {
     }
 
     var result = await Connectivity().checkConnectivity();
-    // ignore: missing_enum_constant_in_switch
     switch (result) {
       case ConnectivityResult.wifi:
+      // case ConnectivityResult.ethernet:
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => HomePage()));
         break;
       case ConnectivityResult.mobile:
+      // case ConnectivityResult.bluetooth:
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => HomePage()));
         break;
@@ -60,22 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        constraints: const BoxConstraints.expand(),
-        decoration: BoxDecoration(
-            color: Colors.black,
-            image: DecorationImage(
-                image: const AssetImage('assets/Portico.jpg'),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                    Colors.white.withOpacity(0.6), BlendMode.dstATop))),
-        child: Image.asset(
-          'assets/Fitz_logo_white.png',
-          height: 200,
-          width: 200,
-        ),
-        alignment: Alignment.center,
-      ),
+      body: fullbackground()
     );
   }
 }

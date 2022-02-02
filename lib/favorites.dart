@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'utilities/icons.dart';
 import 'about.dart';
 import 'object_details.dart';
-import 'home.dart';
+import 'utilities/string_casing.dart';
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({Key? key}) : super(key: key);
@@ -241,45 +241,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                 ],
                               )
                             ])));
-
-
-                      Card(
-                      clipBehavior: Clip.antiAlias,
-                      child: Column(
-                        children: [
-                          ListTile(
-                            leading: leading,
-                            title: Text(title),
-                            // subtitle: Text("by $artist"),
-                          ),
-                          ButtonBar(
-                            alignment: MainAxisAlignment.start,
-                            children: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ObjectPage(
-                                            id: id
-                                                .replaceAll('object-', '')
-                                                .toString())),
-                                  );
-                                },
-                                child: const Text("Object Details"),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  _deleteData(
-                                      id.replaceAll('object-', '').toString());
-                                },
-                                child: const Text("Remove from Favorites"),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
                   },
                 );
               },
@@ -294,31 +255,11 @@ class _FavoritesPageState extends State<FavoritesPage> {
     );
   }
 
-  explore() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        rosette(),
-        rosette(),
-        rosette(),
-      ],
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.museum_outlined),
-        tooltip: "Go home",
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-          );
-        },
-      ),
+      floatingActionButton: floatingHomeButton(context),
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Center(
@@ -380,12 +321,12 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
                   child: Align(
-                      alignment: Alignment.bottomCenter, child: fitzlogo()),
+                      alignment: Alignment.bottomCenter, child: fitzLogo()),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 230, 0, 0),
                   child: Align(
-                      alignment: Alignment.bottomCenter, child: rosette()),
+                      alignment: Alignment.bottomCenter, child: rosetteSingle()),
                 ),
               ]),
               const Padding(
@@ -397,7 +338,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 ),
               ),
               builder(),
-              explore(),
+              pineapples(),
             ],
           ),
         ),

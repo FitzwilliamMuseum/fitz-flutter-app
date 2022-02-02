@@ -60,6 +60,10 @@ dependencies:
   flutter_archive: ^4.1.1
   day_night_switcher: ^0.2.0+1
   cached_network_image: ^3.2.0
+  panorama: ^0.4.1
+  vimeo_player_flutter: ^0.0.3+2
+  flutter_scroll_to_top: ^2.1.1
+  page_transition: ^2.0.5
 
 
 dev_dependencies:
@@ -119,6 +123,5 @@ flutter:
     - assets/Portico.jpg
     - assets/pineapple.jpg
     - assets/rosette.png
-    - assets/hockney.jpg
     - assets/rosetteRotate.gif
     - assets/pineApple.png

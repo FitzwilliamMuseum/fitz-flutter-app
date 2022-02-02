@@ -42,7 +42,7 @@ class FitzApp extends StatelessWidget {
         'galleries': (context) => const GalleriesPage(),
         'research': (context) => const ResearchPage(),
         '3d': (context) => const ModelsPage(),
-        'augmented':(context) => ObjectGesturesWidget(),
+        'augmented':(context) => ObjectsOnPlanesWidget(),
       },
     );
   }
