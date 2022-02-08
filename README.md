@@ -27,4 +27,5 @@ A working android APK file can be found via [google drive](https://drive.google.
 
 ## Preview
 
-<video autoplay loop muted markdown="1"><source src="https://fitz-cms-images.s3.eu-west-2.amazonaws.com/screen.mp4" type="video/mp4" markdown="1" ></video>
+
+https://fitz-cms-images.s3.eu-west-2.amazonaws.com/screen.mp4
