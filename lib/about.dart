@@ -10,7 +10,6 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
-
   @override
   void initState() {
     super.initState();
@@ -41,7 +40,8 @@ class _AboutPageState extends State<AboutPage> {
 }
 
 class _AboutTextBody extends StatelessWidget {
-  const _AboutTextBody({ Key? key }) : super(key: key);
+  const _AboutTextBody({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -52,10 +52,10 @@ class _AboutTextBody extends StatelessWidget {
         children: const [
           Flexible(
               child: Text(
-                "This is an experimental app to showcase the Fitzwilliam Museum's collection of objects and rich media. "
-                    "\n\nIt was built by Daniel Pett, using Flutter.\n\nVersion 1.0",
-                textAlign: TextAlign.center,
-              ))
+            "This is an experimental app to showcase the Fitzwilliam Museum's collection of objects and rich media. "
+            "\n\nIt was built by Daniel Pett, using Flutter.\n\nVersion 1.0",
+            textAlign: TextAlign.center,
+          ))
         ],
       ),
     );
@@ -63,7 +63,8 @@ class _AboutTextBody extends StatelessWidget {
 }
 
 class _AboutTextTitle extends StatelessWidget {
-  const _AboutTextTitle({ Key? key }) : super(key: key);
+  const _AboutTextTitle({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Padding(

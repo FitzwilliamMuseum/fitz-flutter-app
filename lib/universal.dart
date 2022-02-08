@@ -28,7 +28,7 @@ class _UniversalViewerState extends State<UniversalViewer> {
         body: Container(
           height: double.infinity,
           child: Stack(
-            children:  [
+            children: [
               const Padding(
                   padding: EdgeInsets.fromLTRB(0, 40, 0, 40),
                   child: WebView(
@@ -36,8 +36,8 @@ class _UniversalViewerState extends State<UniversalViewer> {
                         'https://data.fitzmuseum.cam.ac.uk/id/image/flutter/iiif/media-10607#?c=&m=&cv=',
                     javascriptMode: JavascriptMode.unrestricted,
                   )),
-               backIcon(context),
-               aboutIcon(context)
+              backIcon(context),
+              aboutIcon(context)
             ],
           ),
         ));

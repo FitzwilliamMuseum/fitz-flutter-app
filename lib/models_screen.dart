@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'models/3d_models.dart';
 
-// import 'models.dart';
 import 'model_screen.dart';
 
 class ThreeDimensionalModelsPage extends ConsumerStatefulWidget {
@@ -29,14 +28,13 @@ class _ThreeDimensionalModelsPageState
 
   modelsList() {
     final searchResultsData = ref.watch(searchResultsProvider);
-
     return searchResultsData.when(
         data: (results) => GridView.builder(
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200,
-              mainAxisExtent: 280,
-              crossAxisSpacing: 2,
-              mainAxisSpacing: 2),
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 200,
+                  mainAxisExtent: 280,
+                  crossAxisSpacing: 2,
+                  mainAxisSpacing: 2),
               physics: const NeverScrollableScrollPhysics(),
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
@@ -104,7 +102,7 @@ class _ThreeDimensionalModelsPageState
                 // favoritesIcon(context),
               ]),
               const _HeadlineText(),
-             modelsList(),
+              modelsList(),
               pineapples(),
             ],
           ),
