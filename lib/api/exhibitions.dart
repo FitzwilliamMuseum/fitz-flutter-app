@@ -86,13 +86,13 @@ class SwiperList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(color: Colors.white),
+      decoration: const BoxDecoration(color: Colors.grey),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
         child: Swiper(
           itemBuilder: (BuildContext context, int index) {
             final result = exhibits[index];
-            final dates;
+            final dynamic dates;
             if (result.startDate != null && result.endDate != null) {
               dates = DateFormat.yMMMMd('en_US').format(result.startDate!) +
                   ' - ' +
@@ -196,7 +196,7 @@ class SwiperList extends StatelessWidget {
           },
           loop: true,
           itemCount: exhibits.length,
-          control: const SwiperControl(color: Colors.purple),
+          // control: const SwiperControl(color: Colors.purple),
           viewportFraction: 0.8,
           scale: 0.9,
           // layout: SwiperLayout.STACK,

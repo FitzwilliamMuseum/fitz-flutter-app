@@ -38,8 +38,7 @@ class _ModelsPageState extends State<ModelsPage> {
                 height: MediaQuery.of(context).size.height,
                 child: ModelViewer(
                   backgroundColor: Colors.black12,
-                  // src: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
-                  src: 'https://fitz-cms-images.s3.eu-west-2.amazonaws.com/scene.glb',
+                  src: 'https://fitz-cms-images.s3.eu-west-2.amazonaws.com/priest.glb',
                   alt: "A 3D model of a grave marker",
                   ar: false,
                   autoRotate: true,

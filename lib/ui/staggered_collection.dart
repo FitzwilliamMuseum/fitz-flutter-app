@@ -16,6 +16,7 @@ class _StaggeredCollection extends State<StaggeredCollection> {
       crossAxisCount: 4,
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
+
       children: [
         StaggeredGridTile.count(
           crossAxisCellCount: 2,
@@ -37,6 +38,23 @@ class _StaggeredCollection extends State<StaggeredCollection> {
                   height: 300,
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 140, 20, 20),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      top: BorderSide(
+                        width: 4.0,
+                        color: Color(0xA1ADD5BB),
+                      ),
+                    ),
+                  ),
+                  child: const Text('Van Heemskerk',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontSize: 18.0, color: Colors.white)),
+                ),
+              )
             ]),
           ),
         ),
@@ -60,8 +78,26 @@ class _StaggeredCollection extends State<StaggeredCollection> {
                     width: 300,
                     height: 400),
               ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 150, 20, 20),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      top: BorderSide(
+                        width: 4.0,
+                        color: Color(0xA1ADD5BB),
+                      ),
+                    ),
+                  ),
+                  child: const Text('Cupid and Psyche',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontSize: 16.0, color: Colors.white)),
+                ),
+              )
             ]),
           ),
+
         ),
         StaggeredGridTile.count(
             crossAxisCellCount: 4,
@@ -74,12 +110,29 @@ class _StaggeredCollection extends State<StaggeredCollection> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const HighlightPage(id: '19')),
+                          builder: (context) => const HighlightPage(id: '27')),
                     );
                   },
                   child: Image.network(
-                    "https://content.fitz.ms/fitz-website/assets/GR.1-1835_LRG.jpg",
+                    "https://fitz-cms-images.s3.eu-west-2.amazonaws.com/panel-1.jpg",
                     fit: BoxFit.fill,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 140, 20, 20),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        top: BorderSide(
+                          width: 4.0,
+                          color: Color(0xA1ADD5BB),
+                        ),
+                      ),
+                    ),
+                    child: const Text('Simone Martini',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            fontSize: 20.0, color: Colors.white)),
                   ),
                 ),
               ]),

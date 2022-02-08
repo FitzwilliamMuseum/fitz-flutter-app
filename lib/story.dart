@@ -45,13 +45,12 @@ class _StoryPageState extends State<StoryPage> {
         }
         final data = jsonDecode(snapshot.data.toString());
         final news = data['data'];
-        final pubDate = DateTime.tryParse(news[0]['publication_date']);
         return Column(
           children: <Widget>[
-            articleImage(news),
-            articleTitle(news),
-            articleDate(pubDate),
-            articleBody(news)
+            _NewsImage(news: news),
+            _NewsHeadline(news: news),
+            _NewsArticleDate(news: news),
+            _NewsArticleBody(news: news)
           ],
         );
       },
@@ -76,30 +75,14 @@ class _StoryPageState extends State<StoryPage> {
       ),
     );
   }
+}
 
-  Widget articleBody(news){
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-      child: Row(
-        children: [
-          Expanded(
-            child: MarkdownBody(
-              data: removeAllHtmlTags(news[0]['article_body']),
-              styleSheet: MarkdownStyleSheet(
-                p: const TextStyle(
-                    color: Colors.black, fontSize: 16, height: 1.5),
-                blockquote: const TextStyle(
-                    color: Colors.red, fontSize: 16, height: 1.5),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+class _NewsHeadline extends StatelessWidget {
+  const _NewsHeadline({Key? key, required this.news}) : super(key: key);
+  final dynamic news;
 
-
-  Widget articleTitle(news){
+  @override
+  Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
       child: Row(
@@ -121,28 +104,14 @@ class _StoryPageState extends State<StoryPage> {
       ),
     );
   }
+}
 
-  Widget articleDate(pubDate){
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width - 40,
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(DateFormat.yMMMMd('en_US').format(pubDate!),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      fontSize: 16.0, color: Colors.purple)),
-            ),
-          )
-        ],
-      ),
-    );
-  }
+class _NewsImage extends StatelessWidget {
+  const _NewsImage({Key? key, required this.news}) : super(key: key);
+  final dynamic news;
 
-  Widget articleImage(news){
+  @override
+  Widget build(BuildContext context) {
     try {
       if (news[0]["hero_image"] == "") {
         return Padding(
@@ -173,5 +142,58 @@ class _StoryPageState extends State<StoryPage> {
     } on TypeError {
       return const SizedBox.shrink();
     }
+  }
+}
+
+class _NewsArticleBody extends StatelessWidget {
+  const _NewsArticleBody({Key? key, required this.news}) : super(key: key);
+  final dynamic news;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      child: Row(
+        children: [
+          Expanded(
+            child: MarkdownBody(
+              data: removeAllHtmlTags(news[0]['article_body']),
+              styleSheet: MarkdownStyleSheet(
+                p: const TextStyle(
+                    color: Colors.black, fontSize: 16, height: 1.5),
+                blockquote: const TextStyle(
+                    color: Colors.red, fontSize: 16, height: 1.5),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NewsArticleDate extends StatelessWidget {
+  const _NewsArticleDate({Key? key, required this.news}) : super(key: key);
+  final dynamic news;
+
+  @override
+  Widget build(BuildContext context) {
+    final pubDate = DateTime.tryParse(news[0]['publication_date']);
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width - 40,
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(DateFormat.yMMMMd('en_US').format(pubDate!),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16.0, color: Colors.purple)),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

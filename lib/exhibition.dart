@@ -86,8 +86,10 @@ class _ExhibitionPageState extends State<ExhibitionPage> {
 }
 
 class _TessituraButton extends StatelessWidget {
-  const _TessituraButton({ Key? key, required this.exhibition }) : super(key: key);
+  const _TessituraButton({Key? key, required this.exhibition})
+      : super(key: key);
   final dynamic exhibition;
+
   @override
   Widget build(BuildContext context) {
     _launchURL() async {
@@ -101,8 +103,7 @@ class _TessituraButton extends StatelessWidget {
     }
 
     _launchGeneralURL() async {
-      const url =
-          'https://tickets.museums.cam.ac.uk/overview/generaladmission';
+      const url = 'https://tickets.museums.cam.ac.uk/overview/generaladmission';
       if (await canLaunch(url)) {
         await launch(url);
       } else {
@@ -124,8 +125,8 @@ class _TessituraButton extends StatelessWidget {
                   onPrimary: Colors.white,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(1)),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 50, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
                   textStyle: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold)),
             ),
@@ -144,8 +145,8 @@ class _TessituraButton extends StatelessWidget {
                   onPrimary: Colors.white,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(1)),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 50, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
                   textStyle: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold)),
             ),
@@ -159,8 +160,10 @@ class _TessituraButton extends StatelessWidget {
 }
 
 class _ExhibitionTitle extends StatelessWidget {
-  const _ExhibitionTitle({ Key? key, required this.exhibition}) : super(key: key);
+  const _ExhibitionTitle({Key? key, required this.exhibition})
+      : super(key: key);
   final dynamic exhibition;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -187,16 +190,18 @@ class _ExhibitionTitle extends StatelessWidget {
 }
 
 class _ExhibitionBody extends StatelessWidget {
-  const _ExhibitionBody({ Key? key, required this.exhibition}) : super(key: key);
+  const _ExhibitionBody({Key? key, required this.exhibition}) : super(key: key);
   final dynamic exhibition;
+
   @override
   Widget build(BuildContext context) {
     final String narrative;
-
-    if(exhibition[0]['exhibition_abstract'] != ''){
+    if (exhibition[0]['exhibition_narrative'] != null) {
+      narrative = exhibition[0]['exhibition_narrative'];
+    } else if (exhibition[0]['exhibition_abstract'] != null) {
       narrative = exhibition[0]['exhibition_abstract'];
     } else {
-      narrative = exhibition[0]['exhibition_narrative'];
+      narrative = '';
     }
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -218,30 +223,38 @@ class _ExhibitionBody extends StatelessWidget {
 }
 
 class _ExhibitionImage extends StatelessWidget {
-  const _ExhibitionImage({ Key? key, required this.exhibition}) : super(key: key);
+  const _ExhibitionImage({Key? key, required this.exhibition})
+      : super(key: key);
   final dynamic exhibition;
+
   @override
   Widget build(BuildContext context) {
     try {
       if (exhibition[0]["hero_image"] == "") {
-        return SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: 350,
-          child: Image.asset('assets/Portico.jpg',
-              fit: BoxFit.fill,
-              color: const Color.fromRGBO(117, 117, 117, 0.9),
-              colorBlendMode: BlendMode.modulate),
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 350,
+            child: Image.asset('assets/Portico.jpg',
+                fit: BoxFit.fill,
+                color: const Color.fromRGBO(117, 117, 117, 0.9),
+                colorBlendMode: BlendMode.modulate),
+          ),
         );
       } else {
-        return SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: 250,
-            child: CircleAvatar(
-              radius: 100.0,
-              backgroundImage: NetworkImage(
-                exhibition[0]['hero_image']['data']['url'],
-              ),
-            ));
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: 250,
+              child: CircleAvatar(
+                radius: 100.0,
+                backgroundImage: NetworkImage(
+                  exhibition[0]['hero_image']['data']['url'],
+                ),
+              )),
+        );
       }
     } on TypeError {
       return const SizedBox.shrink();
@@ -250,14 +263,13 @@ class _ExhibitionImage extends StatelessWidget {
 }
 
 class _ExhibitionDates extends StatelessWidget {
-  const _ExhibitionDates({ Key? key, required this.exhibition})
+  const _ExhibitionDates({Key? key, required this.exhibition})
       : super(key: key);
   final dynamic exhibition;
 
   @override
   Widget build(BuildContext context) {
-    final startDate =
-    DateTime.tryParse(exhibition[0]['exhibition_start_date']);
+    final startDate = DateTime.tryParse(exhibition[0]['exhibition_start_date']);
     final endDate = DateTime.tryParse(exhibition[0]['exhibition_end_date']);
 
     return Padding(
@@ -273,8 +285,7 @@ class _ExhibitionDates extends StatelessWidget {
                       ' - ' +
                       DateFormat.yMMMMd('en_US').format(endDate!),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      fontSize: 16.0, color: Colors.purple)),
+                  style: const TextStyle(fontSize: 16.0, color: Colors.purple)),
             ),
           )
         ],

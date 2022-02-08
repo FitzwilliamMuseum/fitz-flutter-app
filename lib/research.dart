@@ -49,11 +49,7 @@ class ResearchPageState extends ConsumerState<ResearchPage> {
       ),
       error: (e, st) =>
           Text(e.toString(), style: Theme.of(context).textTheme.headline5),
-      loading: () => SizedBox(
-        height: 400,
-        width: 400,
-        child: Image.asset('assets/rosetteRotate.gif', height: 100, width: 100),
-      ),
+      loading: () => errorLoadingRosette()
     );
   }
 
@@ -67,7 +63,7 @@ class ResearchPageState extends ConsumerState<ResearchPage> {
           child: Column(
             children: <Widget>[
               fitzHomeBanner(context),
-              _ResearchTitle(),
+              const _ResearchTitle(),
               newsItems(),
               pineapples(),
             ],

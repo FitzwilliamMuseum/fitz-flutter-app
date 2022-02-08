@@ -12,7 +12,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'utilities/fullscreen.dart';
 import 'utilities/icons.dart';
 import 'utilities/string_casing.dart';
-import 'utilities/string_replace.dart';
 
 class ObjectPage extends StatefulWidget {
   const ObjectPage({Key? key, required this.id}) : super(key: key);
@@ -24,6 +23,7 @@ class ObjectPage extends StatefulWidget {
 }
 
 class _ObjectPageState extends State<ObjectPage> {
+
   @override
   void initState() {
     super.initState();
@@ -41,56 +41,7 @@ class _ObjectPageState extends State<ObjectPage> {
     }
   }
 
-  _writeData(String id) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var list = prefs.getStringList("favorites");
 
-    if (list!.contains(id)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("This item is already in your favorites!"),
-          )
-      );
-    }
-    else {
-      list.add(id);
-
-      prefs.setStringList("favorites", list);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text("Added to your favorites list"),
-            action: SnackBarAction(
-              label: 'Undo',
-              onPressed: () {
-                _deleteData(id);
-              },
-            ),
-          )
-      );
-    }
-  }
-
-  _deleteData(String id) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var list = prefs.getStringList("favorites");
-
-    list!.remove(id);
-
-    prefs.setStringList("favorites", list);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text("Removed from your favorites list"),
-          action: SnackBarAction(
-            label: 'Undo',
-            onPressed: () {
-              _writeData(id);
-            },
-          ),
-        )
-    );
-  }
 
   builder(id) {
     final number = id.toString();
@@ -98,16 +49,7 @@ class _ObjectPageState extends State<ObjectPage> {
       future: fetchData(http.Client(), number),
       builder: (BuildContext context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SizedBox(
-            height: 400,
-            child:  Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          );
+          return errorLoadingRosette();
         }
         final data = jsonDecode(snapshot.data.toString());
         final objectRecord = data;
@@ -119,8 +61,7 @@ class _ObjectPageState extends State<ObjectPage> {
                 contentUrl +
                     objectRecord['multimedia'][0]['processed']['large']
                         ['location'],
-                fit: BoxFit.fitHeight
-            );
+                fit: BoxFit.fitHeight);
           } else {
             leading = SizedBox(
                 width: MediaQuery.of(context).size.width,
@@ -148,72 +89,21 @@ class _ObjectPageState extends State<ObjectPage> {
           description = 'No description recorded currently.';
         }
         final String accession;
-        if(objectRecord['identifier'][0]['accession_number'] != null){
-          accession = objectRecord['identifier'][0]['accession_number'].toString();
+        if (objectRecord['identifier'][0]['accession_number'] != null) {
+          accession =
+              objectRecord['identifier'][0]['accession_number'].toString();
         } else {
           accession = '';
         }
 
         return Column(
           children: <Widget>[
-            Stack(children: <Widget>[
-              SizedBox(
-                width: 400,
-                height: 400,
-                child: ImageFullScreenWrapperWidget(
-                  child: leading,
-                  dark: true,
-                ),
-              ),
-            ]),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
-              child: Text(
-                title.toTitleCase(),
-                textAlign: TextAlign.center,
-                style: GoogleFonts.libreBaskerville(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
-              child: Text(
-                accession,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.libreBaskerville(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
-              child: Text(
-                description,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 6, 0, 7),
-              child: ElevatedButton(
-                onPressed: () {
-                  _writeData(number);
-                },
-                child: const Text('Add to your favourites'),
-                style: ElevatedButton.styleFrom(
-                    primary: Colors.black,
-                    onPrimary: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(1)),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 10),
-                    textStyle: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
-              ),
-            ),
-            pineappleSingle()
+            _ObjectImage(image: leading),
+            _ObjectTitle(title: title),
+            _AccessionNumber(accession: accession),
+            _ObjectDescription(description: description),
+            _AddToFavoritesButton(number: number),
+            pineappleSingle(),
           ],
         );
       },
@@ -229,19 +119,155 @@ class _ObjectPageState extends State<ObjectPage> {
         child: Center(
           child: Column(
             children: <Widget>[
-              Stack(children: <Widget>[
-                portico(context),
-                backIcon(context),
-                aboutIcon(context),
-                homeLogo(),
-                homeRosette(),
-                // favoritesIcon(context),
-              ]),
-              builder(widget.id),
+                fitzHomeBanner(context),
+                builder(widget.id),
+
             ],
           ),
         ),
       ),
     );
   }
+
+
+
+
 }
+
+class _ObjectImage extends StatelessWidget {
+  const _ObjectImage({Key? key, required this.image}) : super(key: key);
+  final dynamic image;
+
+  @override
+  Widget build(BuildContext context) {
+    return ImageFullScreenWrapperWidget(
+      child: image,
+      dark: true,
+    );
+  }
+}
+
+class _ObjectTitle extends StatelessWidget {
+  const _ObjectTitle({Key? key, required this.title}) : super(key: key);
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
+      child: Text(
+        title.toTitleCase(),
+        textAlign: TextAlign.center,
+        style: GoogleFonts.openSans(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+}
+
+class _AccessionNumber extends StatelessWidget {
+  const _AccessionNumber({Key? key, required this.accession}) : super(key: key);
+  final String accession;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
+      child: Text(
+        accession,
+        textAlign: TextAlign.center,
+        style: GoogleFonts.openSans(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+}
+
+class _ObjectDescription extends StatelessWidget {
+  const _ObjectDescription({Key? key, required this.description})
+      : super(key: key);
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
+      child: Text(
+        description,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+class _AddToFavoritesButton extends StatelessWidget {
+  const _AddToFavoritesButton({Key? key, required this.number})
+      : super(key: key);
+  final String number;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 6, 0, 7),
+      child: ElevatedButton(
+        onPressed: () {
+          _writeData(number, context);
+        },
+        child: const Text('Add to your favourites'),
+        style: ElevatedButton.styleFrom(
+            primary: Colors.black,
+            onPrimary: Colors.white,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(1)),
+            padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+            textStyle:
+                const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+}
+
+_writeData(String id, context) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var list = prefs.getStringList("favorites");
+
+  if (list!.contains(id)) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("This item is already in your favorites!"),
+    ));
+  } else {
+    list.add(id);
+    prefs.setStringList("favorites", list);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: const Text("Added to your favorites list"),
+      action: SnackBarAction(
+        label: 'Undo',
+        onPressed: () {
+          _deleteData(id, context);
+        },
+      ),
+    ));
+  }
+}
+
+_deleteData(String id, context) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var list = prefs.getStringList("favorites");
+
+  list!.remove(id);
+  prefs.setStringList("favorites", list);
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    content: const Text("Removed from your favorites list"),
+    action: SnackBarAction(
+      label: 'Undo',
+      onPressed: () {
+        _writeData(id, context);
+      },
+    ),
+  ));
+}
+

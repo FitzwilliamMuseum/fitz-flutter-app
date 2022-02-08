@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:fitz_museum_app/search_results.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'about.dart';
 import 'favorites.dart';
 import 'api/exhibitions.dart';
 import 'api/explore_fitz_cards.dart';
 import 'ui/staggered_collection.dart';
-import 'package:vimeo_player_flutter/vimeo_player_flutter.dart';
+import 'utilities/icons.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 // ignore: use_key_in_widget_constructors
 class HomePage extends StatefulWidget {
@@ -19,17 +17,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int counter = 3;
 
-  static String videoID = 'zrlEJ_3fWds';
-
-  static String vimeoid = '356279697';
-
-  final YoutubePlayerController _controllerYT = YoutubePlayerController(
-    initialVideoId: videoID,
-
-    flags: const YoutubePlayerFlags(
-      autoPlay: false,
-      mute: false,
+  final YoutubePlayerController _controllerYouTube = YoutubePlayerController(
+    initialVideoId: 'zrlEJ_3fWds',
+    params: const YoutubePlayerParams(
+      startAt: Duration(seconds: 0),
+      showControls: true,
+      showFullscreenButton: true,
+      enableKeyboard: true,
+      enableCaption: false,
+      privacyEnhanced: true,
+      strictRelatedVideos: true
     ),
   );
 
@@ -41,132 +40,29 @@ class _HomePageState extends State<HomePage> {
     ]);
   }
 
-  fetchData() async {
-    var request = await http.get(Uri.parse(
-        "https://content.fitz.ms/fitz-website/items/collections?fields=*.*.*.*"));
-    return request.body;
-  }
-
-  _writeData(String id) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var list = prefs.getStringList("favorites");
-
-    if (list!.contains(id)) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("This item is already in your favorites!"),
-      ));
-    } else {
-      list.add(id);
-
-      prefs.setStringList("favorites", list);
-
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Text("Added to your favorite object list"),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            _deleteData(id);
-          },
-        ),
-      ));
-    }
-  }
-
-  _deleteData(String id) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var list = prefs.getStringList("favorites");
-
-    list!.remove(id);
-
-    prefs.setStringList("favorites", list);
-
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: const Text("Removed from your favorites object list"),
-      action: SnackBarAction(
-        label: 'Undo',
-        onPressed: () {
-          _writeData(id);
-        },
-      ),
-    ));
-  }
-
   final _controller = TextEditingController();
 
-  rosette() {
-    return Image.asset('assets/rosette.png', height: 100, width: 100);
-  }
-
-  youtubeText() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 1, 20, 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: const [
-          Flexible(
-              child: Text("Film in focus",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 30.0, color: Colors.black)))
-        ],
-      ),
-    );
-  }
-
-  fitzLogo() {
-    return Image.asset('assets/Fitz_logo_white.png', height: 150, width: 150);
-  }
-
   youtube() {
-    return Padding(
-      padding: const EdgeInsets.all(0.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          YoutubePlayer(
-            controller: _controllerYT,
-            liveUIColor: Colors.white,
-            showVideoProgressIndicator: true,
-          ),
-
-        ],
-      ),
-    );
-  }
-
-  explore() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        rosette(),
-        rosette(),
-        rosette(),
-      ],
-    );
-  }
-
-  pineapple() {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Image.asset('assets/pineapple.jpg', height: 80, width: 80),
-    );
+    return YoutubePlayerIFrame(
+        controller: _controllerYouTube, aspectRatio: 16 / 9);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
+
         physics: const ClampingScrollPhysics(),
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
             children: <Widget>[
               Stack(children: <Widget>[
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  height: 400,
+                  height: 410,
                   child: Image.asset("assets/Portico.jpg",
                       fit: BoxFit.fill,
                       color: const Color.fromRGBO(117, 117, 117, 0.9),
@@ -215,7 +111,8 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 240, 0, 0),
                   child: Align(
-                      alignment: Alignment.bottomCenter, child: rosette()),
+                      alignment: Alignment.bottomCenter,
+                      child: rosetteSingle()),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(30, 330, 30, 20),
@@ -232,23 +129,29 @@ class _HomePageState extends State<HomePage> {
                                           text: _controller.text)));
                         },
                         decoration: const InputDecoration(
-                            prefixIcon: Icon(Icons.search),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(99),
-                              ),
+                          prefixIcon: Icon(Icons.search_sharp),
+                          prefixIconColor: Colors.purple,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20),
                             ),
-                            filled: true,
-                            hintText: "Search our collection",
-                            fillColor: Colors.white),
+                          ),
+                          filled: true,
+                          hintText: "Search our collection",
+                          fillColor: Colors.white70,
+                          hintStyle: TextStyle(color: Colors.black),
+                        ),
                       )),
                 ),
               ]),
-              Stack(children: const <Widget>[
+              Stack(children:  <Widget>[
                 Padding(
-                  padding: EdgeInsets.all(0),
+                  padding: const EdgeInsets.all(0),
                   child: SizedBox(
-                      height: 300, width: 400, child: ExploreActionsPage()),
+                      height: 300,
+                      width: MediaQuery.of(context).size.width,
+                      child: const ExploreActionsPage()
+                  ),
                 ),
               ]),
               StaggeredGrid.count(
@@ -378,23 +281,18 @@ class _HomePageState extends State<HomePage> {
                     crossAxisCellCount: 4,
                     mainAxisCellCount: 2,
                     child: youtube(),
+
                   ),
+
                 ],
               ),
               Stack(children: const <Widget>[
                 SizedBox(height: 421, child: ExPage()),
               ]),
               const StaggeredCollection(),
-              Container(
-                height: 250,
-                child: VimeoPlayer(
-                  videoId: vimeoid,
-                ),
-              ),
-              pineapple(),
               StaggeredGrid.count(
                 crossAxisCount: 4,
-                mainAxisSpacing: 4,
+                mainAxisSpacing: 2,
                 crossAxisSpacing: 4,
                 children: [
                   StaggeredGridTile.count(
@@ -405,10 +303,10 @@ class _HomePageState extends State<HomePage> {
                       child: Stack(children: <Widget>[
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, 'galleries');
+                            Navigator.pushNamed(context, 'audioguide');
                           },
                           child: Image.network(
-                            "https://fitz-cms-images.s3.eu-west-2.amazonaws.com/fitzwilliam-museum-main-entrance-2018_3-1.jpg",
+                            "https://fitz-cms-images.s3.eu-west-2.amazonaws.com/pd_30_1948.jpeg",
                             fit: BoxFit.cover,
                             height: 300,
                             colorBlendMode: BlendMode.modulate,
@@ -426,12 +324,21 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                             ),
-                            child: const Text('Our galleries',
+                            child: const Text('Audio Guide',
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                     fontSize: 20.0, color: Colors.white)),
                           ),
-                        )
+                        ),
+                        const Center(
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            child: Icon(
+                              IconData(0xf0f0, fontFamily: 'MaterialIcons'),
+                              size: 60,
+                            ),
+                          ),
+                        ),
                       ]),
                     ),
                   ),
@@ -443,7 +350,7 @@ class _HomePageState extends State<HomePage> {
                       child: Stack(children: <Widget>[
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, '3d');
+                            Navigator.pushNamed(context, 'iiif');
                           },
                           child: Image.network(
                             'https://fitz-cms-images.s3.eu-west-2.amazonaws.com/fitzwilliam-museum-19th-century-photograph.jpg',
@@ -465,7 +372,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                             ),
-                            child: const Text('3D models',
+                            child: const Text('IIIF images',
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                   fontSize: 14.0,
@@ -515,13 +422,10 @@ class _HomePageState extends State<HomePage> {
                       ]),
                     ),
                   ),
-                  StaggeredGridTile.count(
-                    crossAxisCellCount: 4,
-                    mainAxisCellCount: 2,
-                    child: youtube(),
-                  ),
                 ],
               ),
+              Padding(padding: const EdgeInsets.all(40),child: pineappleSingle())
+              ,
             ],
           ),
         ),

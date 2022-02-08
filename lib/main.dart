@@ -10,25 +10,27 @@ import 'covid.dart';
 import 'exhibitions.dart';
 import 'galleries.dart';
 import 'research.dart';
-import 'models.dart';
 import 'augmented.dart';
+import 'audioguide_screen.dart';
+import 'universal.dart';
+import 'models_screen.dart';
+
 void main() {
   runApp(const ProviderScope(child: FitzApp()));
 }
 
 class FitzApp extends StatelessWidget {
   const FitzApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'The Fitzwilliam Museum',
       theme: ThemeData(
-        iconTheme: const IconThemeData(
-            color: Colors.white
-        ),
-        primarySwatch: Colors.grey,
-          scaffoldBackgroundColor: Colors.white
+          iconTheme: const IconThemeData(color: Colors.white),
+          primarySwatch: Colors.grey,
+          scaffoldBackgroundColor: Colors.white,
       ),
       home: const SplashScreen(),
       initialRoute: 'home',
@@ -36,15 +38,16 @@ class FitzApp extends StatelessWidget {
         'podcasts': (context) => const PodcastsPage(),
         'news': (context) => const NewsPage(),
         'random': (context) => const RandomPage(),
-        'highlights':  (context) => const HighlightsPage(),
+        'highlights': (context) => const HighlightsPage(),
         'covid': (context) => const CovidPage(),
         'exhibitions': (context) => const ExhibitionsPage(),
         'galleries': (context) => const GalleriesPage(),
         'research': (context) => const ResearchPage(),
-        '3d': (context) => const ModelsPage(),
-        'augmented':(context) => ObjectsOnPlanesWidget(),
+        'augmented': (context) => ObjectsOnPlanesWidget(),
+        'audioguide': (context) => const AudioGuide(),
+        'iiif': (context) => const UniversalViewer(),
+        '3d': (context) => const ThreeDimensionalModelsPage(),
       },
     );
   }
 }
-

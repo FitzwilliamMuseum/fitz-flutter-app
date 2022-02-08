@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'podcast_episode.dart';
+import 'podcast_slider_screen.dart';
 import 'models/podcasts_model.dart';
 
 class PodcastsPage extends ConsumerStatefulWidget {
@@ -41,7 +41,7 @@ class PodcastsPageState extends ConsumerState<PodcastsPage> {
                 onTap: () async {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) =>  EpisodePage(id: result.id.toString())),
+                    MaterialPageRoute(builder: (context) =>  PodcastSliderPage(id: result.id.toString())),
                   );
                 },
               ));

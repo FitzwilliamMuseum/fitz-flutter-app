@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +18,7 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
-  fetchData(String id) async {
+  fetchObjectData(String id) async {
     var format = id + '/json';
     final uri = "https://data.fitzmuseum.cam.ac.uk/id/object/" + format;
     var request = await http.get(Uri.parse(uri));
@@ -50,13 +49,12 @@ class _FavoritesPageState extends State<FavoritesPage> {
             return CupertinoAlertDialog(
               title: const Text("Are you sure?"),
               content: const Text(
-                  "This will delete everything forever in your favorites list!"),
+                  "There's no going back, this will delete everything"),
               actions: [
                 TextButton(
                   child: const Text("OK"),
                   onPressed: () {
                     prefs.setStringList("favorites", []);
-
                     Navigator.pop(context);
                     setState(() {});
                   },
@@ -78,7 +76,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
             return AlertDialog(
               title: const Text("Are you certain?"),
               content: const Text(
-                  "This will permanently delete all your favourite objects"),
+                  "This will permanently delete all your favourites"),
               actions: [
                 TextButton(
                   child: const Text("Okay"),
@@ -122,7 +120,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
       future: favoritesList(),
       builder: (BuildContext context, snapshot) {
         if (snapshot.hasData) {
-          /// Here
           List list = (snapshot.data as List).map((e) => e as String).toList();
           int count = list.length;
           if (list.isEmpty) {
@@ -131,7 +128,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
               child: Padding(
                 padding: EdgeInsets.all(20.0),
                 child: Text(
-                    "You have not saved any objects to your list of favourites",
+                    "Your favourites list is empty!",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20.0, color: Colors.purple)),
               ),
@@ -144,18 +141,11 @@ class _FavoritesPageState extends State<FavoritesPage> {
               itemBuilder: (BuildContext context, int index) {
                 String id = list[index];
                 return FutureBuilder(
-                  future: fetchData(id.toString()),
+                  future: fetchObjectData(id.toString()),
                   builder: (BuildContext context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Align(
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
+                      return errorLoadingRosette();
                     }
-
                     var data = jsonDecode(snapshot.data.toString());
                     final objectRecord = data;
                     final String title;
@@ -216,11 +206,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                   padding: const EdgeInsets.fromLTRB(0, 30, 20, 20),
                                   child: Align(
                                     alignment: Alignment.topRight,
-                                    child: Image.asset(
-                                      'assets/pineApple.png',
-                                      width: 60,
-                                      height: 60,
-                                    ),
+                                    child: pineappleSingle()
                                   )),
                               Column(
                                 children: <Widget>[
@@ -250,11 +236,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
           return const Text('Empty results');
         }
 
-        /// HERE
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -346,3 +330,4 @@ class _FavoritesPageState extends State<FavoritesPage> {
     );
   }
 }
+

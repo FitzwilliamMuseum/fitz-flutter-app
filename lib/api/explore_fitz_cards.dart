@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fitz_museum_app/utilities/icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -67,8 +68,8 @@ class ExploreActionsPage extends StatelessWidget {
           } else if (snapshot.hasData) {
             return SwiperList(actions: snapshot.data!);
           } else {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Center(
+              child: errorLoadingRosette(),
             );
           }
         },
@@ -85,11 +86,11 @@ class SwiperList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(color: Colors.white),
+      decoration: const BoxDecoration(color: Colors.indigoAccent),
       height: 300,
-      width: 500,
+      width: 400,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
         child: Swiper(
           itemBuilder: (BuildContext context, int index) {
             final result = actions[index];
@@ -113,7 +114,7 @@ class SwiperList extends StatelessWidget {
                           result.image,
                           fit: BoxFit.cover,
                           colorBlendMode: BlendMode.modulate,
-                          color: const Color.fromRGBO(255,255,255, 0.7),
+                          color: const Color.fromRGBO(255, 255, 255, 0.7),
                         ),
                       ),
                       Padding(
@@ -135,19 +136,19 @@ class SwiperList extends StatelessWidget {
                                 style: const TextStyle(
                                     fontSize: 20.0, color: Colors.white)),
                           ),
-
                         ],
                       )
                     ])));
           },
           loop: true,
           itemCount: actions.length,
-          control: const SwiperControl(color: Colors.purple),
+          // control: const SwiperControl(color: Colors.purple),
           viewportFraction: 0.8,
           scale: 0.9,
-          layout: SwiperLayout.STACK,
+          layout: SwiperLayout.TINDER,
           itemWidth: 500,
-          itemHeight: 400,
+          itemHeight: 300,
+          pagination: const SwiperPagination(alignment: Alignment.centerRight),
         ),
       ),
     );

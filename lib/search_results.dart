@@ -1,15 +1,14 @@
 import 'dart:convert';
-import 'package:fitz_museum_app/object_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'object_details.dart';
 import 'utilities/icons.dart';
 import 'favorites.dart';
 import 'about.dart';
 import 'utilities/string_casing.dart';
+import 'object_slider_screen.dart';
 
 class SearchResultsPage extends StatefulWidget {
   const SearchResultsPage({Key? key, required this.text}) : super(key: key);
@@ -155,7 +154,10 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ObjectPage(id: id)),
+                              builder: (context) =>
+                                  ObjectSliderPage(id: id)
+                                  // ObjectPage(id: id)
+                          ),
                         );
                       },
                       child: Stack(clipBehavior: Clip.none, children: <Widget>[

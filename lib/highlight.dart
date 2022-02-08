@@ -9,6 +9,7 @@ import 'utilities/fullscreen.dart';
 import 'utilities/string_replace.dart';
 import 'utilities/icons.dart';
 
+
 class HighlightPage extends StatefulWidget {
   const HighlightPage({Key? key, required this.id}) : super(key: key);
   final String id;
@@ -112,9 +113,8 @@ class _ObjectTitle extends StatelessWidget {
               child: Text(
                 pharos["title"],
                 textAlign: TextAlign.center,
-                style: GoogleFonts.libreBaskerville(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
+                style: GoogleFonts.ubuntu(
+                  fontSize: 20
                 ),
               ),
             ),
@@ -140,9 +140,15 @@ class _ObjectDescription extends StatelessWidget {
               data: removeAllHtmlTags(pharos['description']),
               styleSheet: MarkdownStyleSheet(
                 p: const TextStyle(
-                    color: Colors.black, fontSize: 16, height: 1.5),
+                    color: Colors.black, fontSize: 18, height: 1.5
+                ),
                 blockquote: const TextStyle(
-                    color: Colors.red, fontSize: 16, height: 1.5),
+                    color: Colors.red,
+                    fontSize: 30,
+                    height: 1.5,
+                    backgroundColor: Colors.redAccent,
+
+                ),
               ),
             ),
           ),
@@ -155,22 +161,33 @@ class _ObjectDescription extends StatelessWidget {
 class _ObjectMaker extends StatelessWidget {
   const _ObjectMaker({Key? key, required this.pharos}) : super(key: key);
   final dynamic pharos;
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width - 40,
-      child: Align(
-        alignment: Alignment.center,
-        child: Text(
-          pharos["maker"],
-          textAlign: TextAlign.center,
-          style: GoogleFonts.libreBaskerville(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
+    if(pharos["maker"] != null) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          width: MediaQuery
+              .of(context)
+              .size
+              .width - 40,
+          child: Align(
+            alignment: Alignment.center,
+            child: Text(
+              pharos["maker"]!,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.ubuntu(
+                fontSize: 20,
+                fontStyle: FontStyle.italic
+              ),
+            ),
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Container();
+    }
   }
 }
 

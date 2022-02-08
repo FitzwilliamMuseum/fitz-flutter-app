@@ -61,6 +61,11 @@ class CovidPageState extends ConsumerState<CovidPage> {
                 ],
               ),
               const _HeadlineText(),
+              const Icon(
+                   IconData(0xe199, fontFamily: 'MaterialIcons'),
+                  color: Colors.deepPurple,size: 90.0
+
+              ),
               builder(),
               pineapples(),
             ],
@@ -98,7 +103,7 @@ class _BodyText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20,8,20,0),
+      padding: const EdgeInsets.fromLTRB(20,0,20,0),
       child: MarkdownBody(
         data: removeAllHtmlTags(result.text),
         styleSheet: MarkdownStyleSheet(
