@@ -6,13 +6,13 @@ import 'utilities/icons.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 class DetailsPage extends ConsumerWidget {
-  const DetailsPage({Key? key, required this.movieId}) : super(key: key);
+  const DetailsPage({Key? key, required this.modelID}) : super(key: key);
 
-  final int movieId;
+  final int modelID;
 
   @override
   Widget build(context, ref) {
-    final modelProvider = ref.watch(modelDetailsProvider(movieId));
+    final modelProvider = ref.watch(modelDetailsProvider(modelID));
     return Scaffold(
       backgroundColor: Colors.black,
       floatingActionButton: floatingHomeButton(context),

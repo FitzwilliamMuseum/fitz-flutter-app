@@ -3,6 +3,6 @@ import '../models/3d_model.dart';
 import '../services/apiservice.dart';
 
 final modelDetailsProvider =
-FutureProvider.autoDispose.family<ThreeDModel?, int>((_, movieId) {
-  return ApiService.instance.getModelDetails(movieId);
+FutureProvider.autoDispose.family<ThreeDModel?, int>((_, modelID) {
+  return ApiService.instance.getModelDetails(modelID);
 });

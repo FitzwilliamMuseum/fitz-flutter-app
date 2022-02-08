@@ -64,7 +64,7 @@ class _ThreeDimensionalModelsPageState
                               context,
                               MaterialPageRoute(
                                   builder: (context) => DetailsPage(
-                                      movieId: int.parse(result.id))),
+                                      modelID: int.parse(result.id))),
                             );
                           }, // Image tapped
                           child: Padding(
