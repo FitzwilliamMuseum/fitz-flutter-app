@@ -1,4 +1,4 @@
-# fitz_museum_app
+# Fitzwilliam Museum Flutter APP
 
 An experimental app written using flutter for the Fitzwilliam Museum,
 which serves up ios and android versions.
