@@ -1,5 +1,7 @@
 # Fitzwilliam Museum - experimental application
 
+[![DOI](https://zenodo.org/badge/449196657.svg)](https://zenodo.org/badge/latestdoi/449196657)
+
 An experimental app written using flutter for the Fitzwilliam Museum,
 which serves up ios and android versions.
 
