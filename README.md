@@ -1,7 +1,10 @@
-# fitz_museum_app
+# Fitzwilliam Museum - experimental application
 
 An experimental app written using flutter for the Fitzwilliam Museum,
 which serves up ios and android versions.
+
+![flutter](https://user-images.githubusercontent.com/286552/164112706-cad0e6fb-0d8d-4435-84e1-0eb6d6a66ed3.jpg)
+
 
 Data is retrieved from:
  * our Directus 8 content management system
